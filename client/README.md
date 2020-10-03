@@ -1,4 +1,4 @@
-:info: This file can be deleted or reformated after the work is done
+:information_source: This file can be deleted or reformated after the work is done
 
 First of all we need to understand what is the client? From this citation from the Project description we can say that the client is some sort of centralized software, we will make simle CLI (command line interface) for the client.
 

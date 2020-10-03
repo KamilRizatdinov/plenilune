@@ -1,4 +1,4 @@
-:info: This file can be deleted or reformated after the work is done
+:information_source: This file can be deleted or reformated after the work is done
 
 All the information you read here is found in this article: https://www.edureka.co/blog/apache-hadoop-hdfs-architecture/
 
