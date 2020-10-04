@@ -1,19 +1,11 @@
 import uuid
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 
 from dataworker import *
-import schemas
 
 app = FastAPI()
 
-# Data dependency
-def dependency():
-    data = get_data()
-    return data
-
-def allocate_blocks(data):
-    storage_servers = data['storage_servers']
 
 # Client side API
 @app.get("/init")
@@ -23,21 +15,18 @@ async def client_init():
 
 
 @app.get("/file/create")
-async def client_file_create(
-    filename: str, 
-    filesize: int = 1024, 
-    data: dict = Depends(dependency)
-):
+async def client_file_create(filename: str, filesize: int = 1024):
     return create_file(filename, filesize)
 
 
 @app.get("/file/write")
-async def client_file_write(
-    filename: str, 
-    filesize: int = 1024, 
-    data: dict = Depends(dependency)
-):
+async def client_file_write(filename: str, filesize: int = 1024):
     return create_file(filename, filesize)
+
+
+@app.get("/file/read")
+async def client_file_read(filename: str):
+    return read_file(filename)
 
 
 @app.get("/write")

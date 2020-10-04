@@ -74,13 +74,25 @@ def allocate_blocks(blocks_num: int):
         block_id = str(uuid.uuid1())
         hostnames, hostnames_num = get_active_storage_servers_hostnames()
         addresses = random.sample(hostnames, min(hostnames_num, replicas))
-        result.append((block_id, addresses))
+        result.append({"block_index": i, "block_name": block_id, "addresses": addresses})
     return result
 
 
+def get_file_blocks(filename: str):
+    data = get_data()
+    client_cursor = data['client_cursor']
+    fsimage = data['fsimage']
+    
+    if filename in fsimage[client_cursor]["files"].keys():
+        return fsimage[client_cursor]["files"][filename]
+    else:
+        return None
+
+
 def create_file_entry(filename: str, blocks_allocation: list):
-    client_cursor = get_data()['client_cursor']
-    fsimage = get_data()['fsimage']
+    data = get_data()
+    client_cursor = data['client_cursor']
+    fsimage = data['fsimage']
     fsimage[client_cursor]["files"][filename] = blocks_allocation
     update_data("fsimage", fsimage)
 
@@ -90,3 +102,12 @@ def create_file(filename: str, filesize: int):
     blocks_allocation = allocate_blocks(blocks_num)
     create_file_entry(filename, blocks_allocation)
     return blocks_allocation
+
+
+def read_file(filename: str):
+    blocks = get_file_blocks(filename)
+    result = []
+    for block in blocks:
+        block["address"] = block.pop("addresses")[0]
+        result.append(block)
+    return {"filename": filename, "blocks": result}
