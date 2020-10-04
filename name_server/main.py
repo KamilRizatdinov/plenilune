@@ -3,10 +3,14 @@ from fastapi import FastAPI
 app = FastAPI()
 
 # Data stored in runtime
-fsimage = {}
-storage_servers = []
-storage_fsimages = []
-storage_status = []
+fsimage = {
+    ".": {
+        "dirs": [],
+        "files": {}
+    }
+}
+storage_servers = {}
+client_cursros = "."
 
 # Client side API
 @app.get("/api/client/init")
@@ -22,6 +26,11 @@ async def client_read():
 @app.get("/api/client/write")
 async def client_write():
     return {"message": "Write request recieved!"}
+
+
+@app.get("/api/client/fetch")
+async def client_write():
+    return {"message": "Fetch request recieved!"}
 
 # Storage side API
 @app.get("/api/storage/update")
