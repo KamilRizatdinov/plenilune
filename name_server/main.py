@@ -1,38 +1,46 @@
-from fastapi import FastAPI
+import uuid
+
+from fastapi import FastAPI, Depends
+
+from dataworker import *
+import schemas
 
 app = FastAPI()
 
-# Data stored in runtime
-fsimage = {
-    ".": {
-        "dirs": [],
-        "files": {}
-    }
-}
-storage_servers = {}
-client_cursros = "."
+# Data dependency
+def dependency():
+    data = get_data()
+    return data
+
+def allocate_blocks(data):
+    storage_servers = data['storage_servers']
 
 # Client side API
-@app.get("/api/client/init")
+@app.get("/init")
 async def client_init():
-    return {"message": "Initialize request recieved!"}
+    dump_data()
+    return {"message": "Initialize request recieved!", "data": get_data()}
 
 
-@app.get("/api/client/read")
-async def client_read():
-    return {"message": "Read request recieved!"}
+@app.get("/file/create")
+async def client_read(
+    filename: str, 
+    filesize: int = 1024, 
+    data: dict = Depends(dependency)
+):
+    return create_file(filename, filesize)
 
 
-@app.get("/api/client/write")
-async def client_write():
+@app.get("/write")
+async def client_write(operation_type: str):
     return {"message": "Write request recieved!"}
 
 
-@app.get("/api/client/fetch")
+@app.get("/fetch")
 async def client_write():
     return {"message": "Fetch request recieved!"}
 
 # Storage side API
-@app.get("/api/storage/update")
+@app.get("/update")
 async def storage_update():
     return {"message": "Update request recieved!"}
