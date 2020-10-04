@@ -29,6 +29,11 @@ async def client_file_read(filename: str):
     return read_file(filename)
 
 
+@app.get("/file/delete")
+async def client_file_delete(filename: str):
+    return delete_file(filename)
+
+
 @app.get("/write")
 async def client_write(operation_type: str):
     return {"message": "Write request recieved!"}

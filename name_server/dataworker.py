@@ -111,3 +111,12 @@ def read_file(filename: str):
         block["address"] = block.pop("addresses")[0]
         result.append(block)
     return {"filename": filename, "blocks": result}
+
+
+def delete_file(filename: str):
+    data = get_data()
+    client_cursor = data['client_cursor']
+    fsimage = data['fsimage']
+    file_allocation = fsimage[client_cursor]["files"].pop(filename)
+    update_data("fsimage", fsimage)
+    return {"filename": filename, "blocks": file_allocation}
