@@ -101,7 +101,7 @@ def create_file(filename: str, filesize: int):
     blocks_num = get_block_num(filesize)
     blocks_allocation = allocate_blocks(blocks_num)
     create_file_entry(filename, blocks_allocation)
-    return blocks_allocation
+    return {"filename": filename, "blocks": blocks_allocation}
 
 
 def read_file(filename: str):
