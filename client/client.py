@@ -1,4 +1,4 @@
-import http.client
+import requests
 import fire
 
 name_server_ip = "127.0.0.1"  # we should change it
@@ -7,12 +7,9 @@ name_server_port = 80
 
 def get_data_server_address(url: str):
     print("Connecting to Name Server...")
-    connection = http.client.HTTPConnection(name_server_ip, name_server_port)
-    connection.request("GET", url)
-    response = connection.getresponse()
-    print("Name server connection:", response.status, response.reason)
-    data_server = response.read()
-    connection.close()
+    response = requests.get(url)
+    print("Name server connection:", response.status_code, response.reason)
+    data_server = response.json()
     return data_server
 
 
@@ -22,13 +19,10 @@ def read(url: str):
     print("You got data server's address")
     # secondly, we connect to the data server and read the file
     print("Connecting to Data Server...")
-    connection2 = http.client.HTTPConnection(data_server)  # i am not sure that it is right
-    connection2.request("GET", url)
-    response = connection2.getresponse()
-    print("Data server connection:", response.status, response.reason)
-    data = response.read()
+    response = requests.get(url)
+    print("Data server connection:", response.status_code, response.reason)
+    data = response.json()
     print(data)
-    connection2.close()
 
 
 def write(url: str):
@@ -38,11 +32,8 @@ def write(url: str):
     print("You got data server's address")
     # secondly, we connect to the data server and read the file
     print("Connecting to Data Server...")
-    connection2 = http.client.HTTPConnection(data_server)  # i am not sure that it is right
-    connection2.request("POST", url)
-    response = connection2.getresponse()
-    print("Data server connection:", response.status, response.reason)
-    connection2.close()
+    response = requests.post(url)
+    print("Data server connection:", response.status_code, response.reason)
 
 
 if __name__ == "__main__":
