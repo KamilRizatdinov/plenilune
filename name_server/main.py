@@ -23,7 +23,7 @@ async def client_init():
 
 
 @app.get("/file/create")
-async def client_read(
+async def client_file_create(
     filename: str, 
     filesize: int = 1024, 
     data: dict = Depends(dependency)
