@@ -31,6 +31,15 @@ async def client_file_create(
     return create_file(filename, filesize)
 
 
+@app.get("/file/write")
+async def client_file_write(
+    filename: str, 
+    filesize: int = 1024, 
+    data: dict = Depends(dependency)
+):
+    return create_file(filename, filesize)
+
+
 @app.get("/write")
 async def client_write(operation_type: str):
     return {"message": "Write request recieved!"}
