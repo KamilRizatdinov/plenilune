@@ -16,22 +16,27 @@ async def client_init():
 
 @app.get("/file/create")
 async def client_file_create(filename: str, filesize: int = 1024):
-    return create_file(filename, filesize)
+    return file_create(filename, filesize)
 
 
 @app.get("/file/write")
 async def client_file_write(filename: str, filesize: int = 1024):
-    return create_file(filename, filesize)
+    return file_create(filename, filesize)
 
 
 @app.get("/file/read")
 async def client_file_read(filename: str):
-    return read_file(filename)
+    return file_read(filename)
 
 
 @app.get("/file/delete")
 async def client_file_delete(filename: str):
-    return delete_file(filename)
+    return file_delete(filename)
+
+
+@app.get("/file/info")
+async def client_file_delete(filename: str):
+    return file_info(filename)
 
 
 @app.get("/write")

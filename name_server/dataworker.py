@@ -97,14 +97,14 @@ def create_file_entry(filename: str, blocks_allocation: list):
     update_data("fsimage", fsimage)
 
 
-def create_file(filename: str, filesize: int):
+def file_create(filename: str, filesize: int):
     blocks_num = get_block_num(filesize)
     blocks_allocation = allocate_blocks(blocks_num)
     create_file_entry(filename, blocks_allocation)
     return {"filename": filename, "blocks": blocks_allocation}
 
 
-def read_file(filename: str):
+def file_read(filename: str):
     blocks = get_file_blocks(filename)
     result = []
     for block in blocks:
@@ -113,10 +113,18 @@ def read_file(filename: str):
     return {"filename": filename, "blocks": result}
 
 
-def delete_file(filename: str):
+def file_delete(filename: str):
     data = get_data()
     client_cursor = data['client_cursor']
     fsimage = data['fsimage']
     file_allocation = fsimage[client_cursor]["files"].pop(filename)
     update_data("fsimage", fsimage)
+    return {"filename": filename, "blocks": file_allocation}
+
+
+def file_info(filename: str):
+    data = get_data()
+    client_cursor = data['client_cursor']
+    fsimage = data['fsimage']
+    file_allocation = fsimage[client_cursor]["files"][filename]
     return {"filename": filename, "blocks": file_allocation}
