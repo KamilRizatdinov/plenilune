@@ -1,13 +1,28 @@
 :information_source: This file can be deleted or reformated after the work is done
 
-All the information you read here is found in this article: https://www.edureka.co/blog/apache-hadoop-hdfs-architecture/
+### How to launch naming server:
+#### Prerequisites:
+* docker engine (follow instructions from [here](https://docs.docker.com/get-docker/))
+* docker compose (follow instructions from [here](https://docs.docker.com/compose/install/))
+#### Instruction:
+* Run nessesary containers in daemon mode with the following command:
+```
+docker-compose up --build -d 
+```
+* Go [here](http://127.0.0.1/docs) in order to view the naming server API documentation
 
-**Here you can find the HDFS Name Node definition:**
-NameNode is the master node in the Apache Hadoop HDFS Architecture that maintains and manages the blocks present on the DataNodes (slave nodes). NameNode is a very highly available server that manages the File System Namespace and controls access to files by clients. I will be discussing this High Availability feature of Apache Hadoop HDFS in my next blog. The HDFS architecture is built in such a way that the user data never resides on the NameNode. The data resides on DataNodes only.
-
-**Functions of Name Node:**
-* It stores file system image
-* It stores file system change log
-* It stores the status of each data node
-* It manages the data replications if needed
-* Recieves updates from the Data Nodes
+### TODO:
+* [x] **/init** Initialize the client storage on a new system, should remove any existing file in the dfs root directory and return available size.
+* [x] **/file/create.** Should allow to create a new empty file.
+* [x] **/file/read.** Should allow to read any file from DFS (download a file from the DFS to the Client side).
+* [x] **/file/write.** Should allow to put any file to DFS (upload a file from the Client side to the DFS)
+* [x] **/file/delete.** Should allow to delete any file from DFS
+* [x] **/file/info.** Should provide information about the file (any useful information - size, node id, etc.)
+* [ ] **/file/copy.** Should allow to create a copy of file.
+* [ ] **/file/move.** Should allow to move a file to the specified path.
+* [ ] **/dir/open.** Should allow to change directory
+* [ ] **/dir/read.** Should return list of files, which are stored in the directory.
+* [ ] **/dir/create** Should allow to create a new directory.
+* [ ] **/dir/delete.** Should allow to delete directory.  If the directory contains files the system should ask for confirmation from the user before deletion.
+* [ ] **/storage/info** Should allow storage servers to send heartbeats
+* [ ] **/storage/blocks** Should allow storage servers to send stored block information
