@@ -5,39 +5,40 @@ name_server_ip = "127.0.0.1"  # we should change it
 name_server_port = 80
 
 
-def get_data_server_address(url: str):
+def get_data_server_address(params):
     print("Connecting to Name Server...")
-    response = requests.get(url)
+    response = requests.get(name_server_ip, params)
     print("Name server connection:", response.status_code, response.reason)
     data_server = response.json()
     return data_server
 
 
-def read(url: str):
-    print("Read", url, "command received!")
-    data_server = get_data_server_address(url)
+def read(params):
+    print("Read", params["filename"], "command received!")
+    data_server = get_data_server_address(params)
     print("You got data server's address")
     # secondly, we connect to the data server and read the file
     print("Connecting to Data Server...")
-    response = requests.get(url)
+    response = requests.get(data_server["address"], params)
     print("Data server connection:", response.status_code, response.reason)
     data = response.json()
     print(data)
 
 
-def write(url: str):
-    print("Write", url, "command received!")
+def write(params):
+    print("Write", params["filename"], "command received!")
     # firstly, we should get data server's ip and port
-    data_server = get_data_server_address(url)
+    data_server = get_data_server_address(params)
     print("You got data server's address")
-    # secondly, we connect to the data server and read the file
+    # secondly, we connect to the data server and write the file
     print("Connecting to Data Server...")
-    response = requests.post(url)
+    response = requests.post(data_server["address"], params)
     print("Data server connection:", response.status_code, response.reason)
 
 
 if __name__ == "__main__":
 
     fire.Fire({
-        "File read": read()
+        "File read": read(),
+        "File write": write()
     })
