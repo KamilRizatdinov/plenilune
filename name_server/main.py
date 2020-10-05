@@ -37,6 +37,8 @@ async def client_file_read(filename: str):
 
 @app.get("/file/copy")
 async def client_file_copy(filename: str, copy: str):
+    if not check_file_existance(filename):
+        raise HTTPException(status_code=400, detail=f"File '{filename}' does not exist in that directory!")
     if check_file_existance(copy):
         raise HTTPException(status_code=400, detail=f"File '{copy}' already exists in that directory!")
     return file_copy(filename, copy)
