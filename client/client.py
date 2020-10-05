@@ -66,8 +66,8 @@ def create(filename):
 if __name__ == "__main__":
 
     fire.Fire({
-        "File read": read(),
-        "File write": write(),
-        "File delete": delete(),
-        "File create": create()
+        "File read": read,
+        "File write": write,
+        "File delete": delete,
+        "File create": create
     })
