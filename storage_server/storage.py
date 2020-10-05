@@ -56,6 +56,5 @@ async def forward(servers: list, file: UploadFile = File(...)):
 
     requests.post('http://' + server + 'file/put', files=files)
 
-
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
