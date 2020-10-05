@@ -1,9 +1,8 @@
 import uvicorn
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File
 import os
 import shutil
 import requests
-from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -38,7 +37,7 @@ async def get(filename: str):
     '''
     block_address = DATA_DIR + filename
     if not os.path.isfile(block_address):
-        return {'message': 'No such file on the server'}
+        raise HTTPException(status_code=400, detail=f'File "{filename}" does not exist in directory!')
     with open(block_address) as f:
         return f.read() 
 
