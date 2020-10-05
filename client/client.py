@@ -3,7 +3,7 @@ import os
 import requests
 import fire
 
-name_server_address = "http://0.0.0.0"  # we should change it
+name_server_address = "http://0.0.0.0"
 name_server_port = 80
 
 
@@ -59,6 +59,7 @@ def delete(filename):
     filesize = os.path.getsize(filename)
     params = {"filename": filename, "filesize": filesize}
     url = name_server_address + "/file/delete"
+    print("Connecting to Name Server...")
     response = requests.get(url, params)
     if response.status_code != 200:
         print(response.json()["detail"])
@@ -82,6 +83,7 @@ def read(filename):
     filesize = os.path.getsize(filename)
     params = {"filename": filename, "filesize": filesize}
     url = name_server_address + "/file/read"
+    print("Connecting to Name Server...")
     response = requests.get(url, params)
     data = response.json()
     if response.status_code != 200:
@@ -102,11 +104,111 @@ def read(filename):
     print("You had successfully upload the file!")
 
 
+def create(filename):
+    print("Create", filename, "command received!")
+    filesize = os.path.getsize(filename)
+    params = {"filename": filename, "filesize": filesize}
+    url = name_server_address + "/file/create"
+    print("Connecting to Name Server...")
+    response = requests.get(url, params)
+    data = response.json()
+    if response.status_code != 200:
+        print(response.json()["detail"])
+        return
+    blocks = data["blocks"]
+    size = data['block_size']
+
+    print("You had successfully created a new file!")
+
+
+def copy(filename):
+    print("Copy", filename, "command received!")
+    filesize = os.path.getsize(filename)
+    params = {"filename": filename, "filesize": filesize}
+    url = name_server_address + "/file/copy"
+    print("Connecting to Name Server...")
+    response = requests.get(url, params)
+    data = response.json()
+    if response.status_code != 200:
+        print(response.json()["detail"])
+        return
+    src_blocks = data["src_blocks"]
+    dest_blocks = data["dest_blocks"]
+
+    print("You had successfully copied the file!")
+
+
+def move(filename, path):
+    print("Move", filename, "to", path, "command received!")
+    filesize = os.path.getsize(filename)
+    params = {"filename": filename, "filesize": filesize}
+    url = name_server_address + "/file/move"
+    print("Connecting to Name Server...")
+    response = requests.get(url, params)
+    data = response.json()
+    if response.status_code != 200:
+        print(response.json()["detail"])
+        return
+
+    print("You had successfully moved the file!")
+
+
+def create_dir(dirname):
+    print("Create directory", dirname, "command received!")
+    params = {"dirname": dirname}
+    url = name_server_address + "/dir/create"
+    print("Connecting to Name Server...")
+    response = requests.get(url, params)
+    if response.status_code != 200:
+        print(response.json()["detail"])
+        return
+    print("You had successfully create a new directory!")
+
+
+def open_dir(dirname):
+    print("Open directory", dirname, "command received!")
+    params = {"dirname": dirname}
+    url = name_server_address + "/dir/open"
+    print("Connecting to Name Server...")
+    response = requests.get(url, params)
+    if response.status_code != 200:
+        print(response.json()["detail"])
+        return
+    print("You are in", dirname, "directory!")
+
+
+def delete_dir(dirname):
+    print("Delete directory", dirname, "command received!")
+    params = {"dirname": dirname}
+    url = name_server_address + "/dir/delete"
+    print("Connecting to Name Server...")
+    response = requests.get(url, params)
+    if response.status_code != 200:
+        print(response.json()["detail"])
+        return
+    print("You had successfully delete the directory!")
+
+
+def read_dir(dirname):
+    print("Read directory", dirname, "command received!")
+    params = {"dirname": dirname}
+    url = name_server_address + "/dir/read"
+    print("Connecting to Name Server...")
+    response = requests.get(url, params)
+    if response.status_code != 200:
+        print(response.json()["detail"])
+        return
+    data = response.json()
+    print(data)
+
+
 if __name__ == "__main__":
     fire.Fire({
         "get": read,
         "put": write,
         "rm": delete,
         "init": initialize,
-        "info": info
+        "info": info,
+        "copy": copy,
+        "create": create
     })
