@@ -85,6 +85,41 @@ async def get(filename: str):
         return f.read() 
 
 
+@app.post('/file/copy',
+    summary='Copy block',
+    response_class=Response,
+    responses={
+        200: {'message': 'Copy is successfully created'},
+        404: {'message': 'Copy is not created'},
+    },
+)
+async def copy(servers: list, filename: str, newfilename: str):
+    '''
+    servers: list of ip addresses with corresponding port where file need to be copied
+    filename: name of file that client wants to copy
+    newfilename: name of file copy
+    '''
+    new_block_address = DATA_DIR + newfilename
+    with open(DATA_DIR + filename, 'rb') as f, open(new_block_address) as copyfile:
+        shutil.copyfileobj(f, copyfile)
+    if not os.path.isfile(new_block_address):
+        return Response(status_code=404)
+    forward_copy(servers, filename, newfilename)
+    return Response(status_code=200)
+
+
+async def forward_copy(servers: list, filename: str, newfilename: str):
+    '''
+    servers: list of ip addresses with corresponding port where file need to be copied
+    filename: name of file that client wants to copy
+    newfilename: name of file copy
+    '''
+    server = servers[0]
+    servers = servers[1:]
+
+    requests.post('http://' + server + 'file/copy', data={'servers': servers, 'filename': filename, 'newfilename': newfilename},)
+
+
 @app.delete('/file/delete',
     summary='Delete block',
     response_class=Response,
