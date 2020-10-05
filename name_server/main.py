@@ -17,35 +17,35 @@ async def client_init():
 @app.get("/file/create")
 async def client_file_create(filename: str, filesize: int = 1024):
     if check_file_existance(filename):
-        raise HTTPException(status_code=404, detail=f"File '{filename}' already exists in that directory!")
+        raise HTTPException(status_code=400, detail=f"File '{filename}' already exists in that directory!")
     return file_create(filename, filesize)
 
 
 @app.get("/file/write")
 async def client_file_write(filename: str, filesize: int = 1024):
     if check_file_existance(filename):
-        raise HTTPException(status_code=404, detail=f"File '{filename}' already exists in that directory!")
+        raise HTTPException(status_code=400, detail=f"File '{filename}' already exists in that directory!")
     return file_create(filename, filesize)
 
 
 @app.get("/file/read")
 async def client_file_read(filename: str):
     if not check_file_existance(filename):
-        raise HTTPException(status_code=404, detail=f"File '{filename}' does not exist in that directory!")
+        raise HTTPException(status_code=400, detail=f"File '{filename}' does not exist in that directory!")
     return file_read(filename)
 
 
 @app.get("/file/delete")
 async def client_file_delete(filename: str):
     if not check_file_existance(filename):
-        raise HTTPException(status_code=404, detail=f"File '{filename}' does not exist in that directory!")
+        raise HTTPException(status_code=400, detail=f"File '{filename}' does not exist in that directory!")
     return file_delete(filename)
 
 
 @app.get("/file/info")
 async def client_file_info(filename: str):
     if not check_file_existance(filename):
-        raise HTTPException(status_code=404, detail=f"File '{filename}' does not exist in that directory!")
+        raise HTTPException(status_code=400, detail=f"File '{filename}' does not exist in that directory!")
     return file_info(filename)
 
 # Storage side API

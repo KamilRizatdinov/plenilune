@@ -1,3 +1,5 @@
+import os
+
 import requests
 import fire
 
@@ -31,17 +33,28 @@ def read(filename):
         print("Something went wrong:", response.status_code, response.reason)
 
 
-def write(filename):
-    params = {"filename": filename}
-    print("Write", filename, "command received!")
-    data_server = get_data_server_address(params)
-    url = data_server + "/file/write"
-    print("Connecting to Data Server...")
-    response = requests.post(url, params)
-    if response.status_code == 200:
-        print("You have successfully uploaded the file!")
-    else:
-        print("Something went wrong:", response.status_code, response.reason)
+def write(filename: str):
+    filesize = os.path.getsize(filename)
+    name_server_response = requests.get(f"{name_server_address}/file/write", params={"filename": filename, "filesize": filesize})
+    
+    if name_server_response.status_code != 200:
+        print(name_server_response.json()["detail"])
+        return
+    
+    data = name_server_response.json()
+    blocks = data["blocks"]
+    block_size = data["block_size"]
+
+    for block in blocks:
+        block_name = block["block_name"]
+        storage_server_addresses = block["addresses"]
+
+        storage_server_response = requests.post(
+            f'http://{storage_server_addresses[0]}/file/put', 
+            data={'servers': storage_server_addresses},
+            files={'file': (filename, open(filename, 'rb'))}
+        )
+        print(storage_server_response.json())
 
 
 def delete(filename):
@@ -84,9 +97,9 @@ def initialize():
 
 if __name__ == "__main__":
     fire.Fire({
-        "File read": read,
-        "File write": write,
-        "File delete": delete,
-        "File create": create,
-        "Initialize": initialize
+        "get": read,
+        "put": write,
+        "rm": delete,
+        "touch": create,
+        "init": initialize
     })
