@@ -166,4 +166,12 @@ def directory_create(dirname: str):
     fsimage[client_cursor]["dirs"].append(dirname)
     fsimage[f'{client_cursor}/{dirname}'] = {"dirs": [], "files": {}}
     update_data("fsimage", fsimage)
-    return 
+    return {"detail": f"Directory {dirname} created"}
+
+
+def directory_open(dirname: str):
+    data = get_data()
+    client_cursor = data['client_cursor']
+    client_cursor = f'{client_cursor}/{dirname}'
+    update_data("client_cursor", client_cursor)
+    return {"detail": f"Your current directory: {client_cursor}"}

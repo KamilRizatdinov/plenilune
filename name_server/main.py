@@ -70,6 +70,13 @@ async def client_directory_create(dirname: str):
     return directory_create(dirname)
 
 
+@app.get("/dir/open")
+async def client_directory_open(dirname: str):
+    if not check_directory_existance(dirname):
+        raise HTTPException(status_code=400, detail=f"Directory '{dirname}' does not exist in that directory!")
+    return directory_open(dirname)
+
+
 # Storage side API
 @app.get("/update")
 async def storage_update():
