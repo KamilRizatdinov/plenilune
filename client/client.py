@@ -13,7 +13,8 @@ def get_blocks(url, params):
     if response.status_code == 200:
         print("You have successfully obtained the address of the data server!")
     else:
-        print("Something went wrong:", response.status_code, response.reason)
+        print("Something went wrong:", response.json()["detail"])
+        return
     return response.json()
 
 
@@ -38,8 +39,7 @@ def write(filename: str):
             print("You had successfully upload the file!")
             print(response.json())
         else:
-            print("Something went wrong:", response.json()["detail"])
-            return
+            print("Something went wrong:", response.status_code, response.reason)
 
 
 '''def write(filename: str):
