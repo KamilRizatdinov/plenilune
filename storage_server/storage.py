@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Response
 import os
 import shutil
 import requests
@@ -17,15 +17,23 @@ async def put(servers: list, file: UploadFile = File(...)):
     with open(DATA_DIR + file.filename, 'wb') as buffer:
         shutil.copyfileobj(file.file, buffer)
     # if len(servers) > 0:
-    #     forward(servers, file)
+    #     forward_put(servers, file)
     return {'filename': file.filename, 'message': 'Data is recieved!'}
 
 
-# @app.post('/server/client/put/')
-# async def put(block: Block):
-#     with open(DATA_DIR + str(block.block_uuid), 'w') as f:
-#         f.write(block.data)
-#     return {'message': 'Data is recieved!'}
+async def forward_put(servers: list, file: UploadFile = File(...)):
+    '''
+    servers: list of ip addresses with corresponding port where to replicate the file
+    file: file itself to upload, it's name I suppose in format of str
+    '''
+    server = servers[0]
+    servers = servers[1:]
+
+    files = {
+        'file': (file.filename, open(DATA_DIR + file.filename, 'rb')),
+    }
+
+    requests.post('http://' + server + 'file/put', files=files)
 
 
 # block_uuid was replaced by filename because of 
@@ -42,19 +50,38 @@ async def get(filename: str):
         return f.read() 
 
 
-async def forward(servers: list, file: UploadFile = File(...)):
+@app.delete('/file/delete',
+    summary='Delete block',
+    response_class=Response,
+    responses={
+        200: {'message': 'Block is successfully deleted'},
+        404: {'message': 'Block is not found'},
+    },
+)
+async def delete(servers: list, filename: str):
     '''
-    servers: list of ip addresses with corresponding port where to replicate the file
-    file: file itself to upload, it's name I suppose in format of str
+    servers: list of ip addresses with corresponding port where to delete the file
+    filename: name of file that client wants to delete
+    '''
+    block_address = DATA_DIR + filename
+    if not os.path.isfile(block_address):
+        return Response(status_code=404)
+    else:
+        os.remove(block_address)
+        forward_delete(servers, filename)
+    return Response(status_code=200)
+
+
+async def forward_delete(servers: list, filename: str):
+    '''
+    servers: list of ip addresses with corresponding port where to delete the file
+    filename: name of file that client wants to delete
     '''
     server = servers[0]
     servers = servers[1:]
 
-    files = {
-        'file': (file.filename, open(DATA_DIR + file.filename, 'rb')),
-    }
+    requests.post('http://' + server + 'file/delete', data={'servers': servers, 'filename': filename},)
 
-    requests.post('http://' + server + 'file/put', files=files)
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
