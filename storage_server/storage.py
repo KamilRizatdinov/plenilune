@@ -27,8 +27,8 @@ async def create(servers: list, filename: str):
         pass
     if not os.path.isfile(block_address):
         return Response(status_code=404)
-    
-    forward_create(servers, filename)
+    if len(servers) > 1:
+        forward_create(servers, filename)
     return Response(status_code=200)
 
 
@@ -37,7 +37,7 @@ async def forward_create(servers: list, filename: str):
     servers: list of ip addresses with corresponding port where to create the file
     filename: name of file that client wants to create
     '''
-    server = servers[0]
+    server = servers[1]
     servers = servers[1:]
 
     requests.post('http://' + server + '/file/create', data={'servers': servers, 'filename': filename})
@@ -51,8 +51,8 @@ async def put(servers: list, file: UploadFile = File(...)):
     '''
     with open(DATA_DIR + file.filename, 'wb') as buffer:
         shutil.copyfileobj(file.file, buffer)
-    # if len(servers) > 0:
-    #     forward_put(servers, file)
+    if len(servers) > 1:
+        forward_put(servers, file)
     return {'filename': file.filename, 'message': 'Data is recieved!'}
 
 
@@ -61,7 +61,7 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
     servers: list of ip addresses with corresponding port where to replicate the file
     file: file itself to upload, it's name I suppose in format of str
     '''
-    server = servers[0]
+    server = servers[1]
     servers = servers[1:]
 
     files = {
@@ -73,7 +73,7 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
 
 # block_uuid was replaced by filename because of 
 # using this notation in function put
-@app.get('/file/get/')
+@app.get('/file/get')
 async def get(filename: str):
     '''
     filename: name of file that client wants to get
@@ -104,7 +104,8 @@ async def copy(servers: list, filename: str, newfilename: str):
         shutil.copyfileobj(f, copyfile)
     if not os.path.isfile(new_block_address):
         return Response(status_code=404)
-    forward_copy(servers, filename, newfilename)
+    if len(servers) > 1:
+        forward_copy(servers, filename, newfilename)
     return Response(status_code=200)
 
 
@@ -114,7 +115,7 @@ async def forward_copy(servers: list, filename: str, newfilename: str):
     filename: name of file that client wants to copy
     newfilename: name of file copy
     '''
-    server = servers[0]
+    server = servers[1]
     servers = servers[1:]
 
     requests.post('http://' + server + '/file/copy', data={'servers': servers, 'filename': filename, 'newfilename': newfilename})
@@ -138,6 +139,7 @@ async def delete(servers: list, filename: str):
         return Response(status_code=404)
     else:
         os.remove(block_address)
+    if len(servers) > 1:
         forward_delete(servers, filename)
     return Response(status_code=200)
 
@@ -147,7 +149,7 @@ async def forward_delete(servers: list, filename: str):
     servers: list of ip addresses with corresponding port where to delete the file
     filename: name of file that client wants to delete
     '''
-    server = servers[0]
+    server = servers[1]
     servers = servers[1:]
 
     requests.post('http://' + server + '/file/delete', data={'servers': servers, 'filename': filename})
