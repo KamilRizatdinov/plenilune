@@ -1,7 +1,7 @@
 import requests
 import fire
 
-name_server_address = "127.0.0.1"  # we should change it
+name_server_address = "http://0.0.0.0"  # we should change it
 name_server_port = 80
 
 
@@ -31,7 +31,7 @@ def read(filename):
         print("Something went wrong:", response.status_code, response.reason)
 
 
-def write(filename, c: bool = False):
+def write(filename, c = False):
     params = {"filename": filename}
     print("Write", filename, "command received!")
     data_server = get_data_server_address(params)
@@ -69,10 +69,21 @@ def create(filename):
         print("Something went wrong:", response.status_code, response.reason)
 
 
+def initialize():
+    print("Connecting to Name Server...")
+    url = name_server_address + "/init"
+    response = requests.get(url)
+    if response.status_code == 200:
+        print("You have successfully connect to the name server!")
+    else:
+        print("Something went wrong:", response.status_code, response.reason)
+
+
 if __name__ == "__main__":
     fire.Fire({
         "File read": read,
         "File write": write,
         "File delete": delete,
-        "File create": create
+        "File create": create,
+        "Initialize": initialize
     })
