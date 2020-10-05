@@ -5,7 +5,7 @@ import uuid
 import redis
 
 
-conn = redis.Redis('redis')
+conn = redis.Redis('localhost')
 
 
 def dump_data():
@@ -115,6 +115,12 @@ def file_read(filename: str):
         block["address"] = block.pop("addresses")[0]
         result.append(block)
     return {"filename": filename, "blocks": result, "block_size": get_data()["block_size"]}
+
+
+def file_copy(filename: str, copy: str):
+    blocks = get_file_blocks(filename)
+
+    return {"filename": filename, "src_blocks": blocks, "dest_blocks": result, "block_size": get_data()["block_size"]}
 
 
 def file_delete(filename: str):

@@ -35,6 +35,13 @@ async def client_file_read(filename: str):
     return file_read(filename)
 
 
+@app.get("/file/copy")
+async def client_file_copy(filename: str, copy: str):
+    if check_file_existance(copy):
+        raise HTTPException(status_code=400, detail=f"File '{copy}' already exists in that directory!")
+    return file_copy(filename, copy)
+
+
 @app.get("/file/delete")
 async def client_file_delete(filename: str):
     if not check_file_existance(filename):
