@@ -77,6 +77,11 @@ async def client_directory_open(dirname: str):
     return directory_open(dirname)
 
 
+@app.get("/dir/read")
+async def client_directory_read():
+    return directory_read()
+
+
 # Storage side API
 @app.get("/update")
 async def storage_update():

@@ -184,3 +184,13 @@ def directory_open(dirname: str):
             update_data("client_cursor", client_cursor)
             return {"detail": f"Your current directory: {client_cursor}"}
 
+
+def directory_read():
+    data = get_data()
+    client_cursor = data['client_cursor']
+    fsimage = data['fsimage']
+    result = {}
+    result['dirs'] = fsimage[client_cursor]['dirs']
+    result['files'] = list(fsimage[client_cursor]['files'].keys())
+    return result
+

@@ -21,7 +21,7 @@ docker-compose up --build -d
 * [x] **/file/copy.** Should allow to create a copy of file.
 * [ ] **/file/move.** Should allow to move a file to the specified path.
 * [x] **/dir/open.** Should allow to change directory
-* [ ] **/dir/read.** Should return list of files, which are stored in the directory.
+* [ч] **/dir/read.** Should return list of files, which are stored in the directory.
 * [x] **/dir/create** Should allow to create a new directory.
 * [ ] **/dir/delete.** Should allow to delete directory.  If the directory contains files the system should ask for confirmation from the user before deletion.
 * [ ] **/storage/info** Should allow storage servers to send heartbeats
