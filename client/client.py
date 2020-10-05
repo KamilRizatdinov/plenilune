@@ -38,7 +38,8 @@ def write(filename: str):
             print("You had successfully upload the file!")
             print(response.json())
         else:
-            print("Something went wrong:", response.status_code, response.reason)
+            print("Something went wrong:", response.json()["detail"])
+            return
 
 
 '''def write(filename: str):
