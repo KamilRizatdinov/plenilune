@@ -5,7 +5,7 @@ import uuid
 import redis
 
 
-conn = redis.Redis('localhost')
+conn = redis.Redis('redis')
 
 
 def dump_data():
