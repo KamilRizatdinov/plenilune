@@ -40,7 +40,7 @@ async def forward_create(servers: list, filename: str):
     server = servers[0]
     servers = servers[1:]
 
-    requests.post('http://' + server + 'file/create', data={'servers': servers, 'filename': filename},)
+    requests.post('http://' + server + '/file/create', data={'servers': servers, 'filename': filename})
 
 
 @app.post('/file/put')
@@ -68,7 +68,7 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
         'file': (file.filename, open(DATA_DIR + file.filename, 'rb')),
     }
 
-    requests.post('http://' + server + 'file/put', files=files)
+    requests.post('http://' + server + '/file/put', files=files)
 
 
 # block_uuid was replaced by filename because of 
@@ -117,7 +117,7 @@ async def forward_copy(servers: list, filename: str, newfilename: str):
     server = servers[0]
     servers = servers[1:]
 
-    requests.post('http://' + server + 'file/copy', data={'servers': servers, 'filename': filename, 'newfilename': newfilename},)
+    requests.post('http://' + server + '/file/copy', data={'servers': servers, 'filename': filename, 'newfilename': newfilename})
 
 
 @app.delete('/file/delete',
@@ -150,7 +150,7 @@ async def forward_delete(servers: list, filename: str):
     server = servers[0]
     servers = servers[1:]
 
-    requests.post('http://' + server + 'file/delete', data={'servers': servers, 'filename': filename},)
+    requests.post('http://' + server + '/file/delete', data={'servers': servers, 'filename': filename})
 
 
 if __name__ == '__main__':
