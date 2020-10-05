@@ -31,13 +31,15 @@ def read(filename):
         print("Something went wrong:", response.status_code, response.reason)
 
 
-def write(filename):
+def write(filename, c: bool = False):
     params = {"filename": filename}
     print("Write", filename, "command received!")
     data_server = get_data_server_address(params)
     url = data_server + "/write"
     print("Connecting to Data Server...")
     response = requests.post(url, params)
+    if c:
+        return response
     if response.status_code == 200:
         print("You have successfully uploaded the file!")
     else:
@@ -60,11 +62,14 @@ def delete(filename):
 def create(filename):
     print("Create", filename, "command received!")
     open("filename", "w+")
-    write(filename)
+    response = write(filename, c=True)
+    if response.status_code == 200:
+        print("You have successfully create a new file!")
+    else:
+        print("Something went wrong:", response.status_code, response.reason)
 
 
 if __name__ == "__main__":
-
     fire.Fire({
         "File read": read,
         "File write": write,
