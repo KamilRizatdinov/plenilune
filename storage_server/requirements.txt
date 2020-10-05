@@ -8,3 +8,4 @@ requests==2.24.0
 starlette==0.13.6
 urllib3==1.25.10
 uvicorn==0.12.1
+python-multipart

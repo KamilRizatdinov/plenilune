@@ -30,7 +30,7 @@ async def put(servers: list, file: UploadFile = File(...)):
 
 # block_uuid was replaced by filename because of 
 # using this notation in function put
-@app.get('/file/get/{filename}')
+@app.get('/file/get/')
 async def get(filename: str):
     '''
     filename: name of file that client wants to get
@@ -55,7 +55,6 @@ async def forward(servers: list, file: UploadFile = File(...)):
     }
 
     requests.post('http://' + server + 'file/put', files=files)
-
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
