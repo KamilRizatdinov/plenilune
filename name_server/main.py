@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from dataworker import *
 
@@ -16,6 +16,8 @@ async def client_init():
 
 @app.get("/file/create")
 async def client_file_create(filename: str, filesize: int = 1024):
+    if check_file_existance(filename):
+        raise HTTPException(status_code=404, detail=f"File {filename} already exists in that directory!")
     return file_create(filename, filesize)
 
 

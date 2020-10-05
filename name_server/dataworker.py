@@ -67,6 +67,17 @@ def get_block_num(filesize):
     return filesize // block_size + 1
 
 
+def get_file_blocks(filename: str):
+    data = get_data()
+    client_cursor = data['client_cursor']
+    fsimage = data['fsimage']
+    
+    if filename in fsimage[client_cursor]["files"].keys():
+        return fsimage[client_cursor]["files"][filename]
+    else:
+        return None
+
+
 def allocate_blocks(blocks_num: int):
     replicas = get_data()['replication']
     result = []
@@ -78,15 +89,8 @@ def allocate_blocks(blocks_num: int):
     return result
 
 
-def get_file_blocks(filename: str):
-    data = get_data()
-    client_cursor = data['client_cursor']
-    fsimage = data['fsimage']
-    
-    if filename in fsimage[client_cursor]["files"].keys():
-        return fsimage[client_cursor]["files"][filename]
-    else:
-        return None
+def check_file_existance(filename: str):
+    return get_file_blocks(filename) != None
 
 
 def create_file_entry(filename: str, blocks_allocation: list):
