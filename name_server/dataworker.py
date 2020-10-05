@@ -148,3 +148,22 @@ def file_info(filename: str):
     fsimage = data['fsimage']
     file_allocation = fsimage[client_cursor]["files"][filename]
     return {"filename": filename, "blocks": file_allocation, "block_size": get_data()["block_size"]}
+
+
+def check_directory_existance(dirname: str):
+    data = get_data()
+    client_cursor = data['client_cursor']
+    fsimage = data['fsimage']
+    if dirname in fsimage[client_cursor]["dirs"]:
+        return True
+    return False
+
+
+def directory_create(dirname: str):
+    data = get_data()
+    client_cursor = data['client_cursor']
+    fsimage = data['fsimage']
+    fsimage[client_cursor]["dirs"].append(dirname)
+    fsimage[f'{client_cursor}/{dirname}'] = {"dirs": [], "files": {}}
+    update_data("fsimage", fsimage)
+    return 

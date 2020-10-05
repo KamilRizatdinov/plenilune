@@ -8,6 +8,11 @@ app = FastAPI()
 
 
 # Client side API
+@app.get("/status")
+async def client_status():
+    return get_data()
+
+
 @app.get("/init")
 async def client_init():
     dump_data()
@@ -36,12 +41,12 @@ async def client_file_read(filename: str):
 
 
 @app.get("/file/copy")
-async def client_file_copy(filename: str, copy: str):
+async def client_file_copy(filename: str, destination: str):
     if not check_file_existance(filename):
         raise HTTPException(status_code=400, detail=f"File '{filename}' does not exist in that directory!")
-    if check_file_existance(copy):
-        raise HTTPException(status_code=400, detail=f"File '{copy}' already exists in that directory!")
-    return file_copy(filename, copy)
+    if check_file_existance(destination):
+        raise HTTPException(status_code=400, detail=f"File '{destination}' already exists in that directory!")
+    return file_copy(filename, destination)
 
 
 @app.get("/file/delete")
@@ -56,6 +61,14 @@ async def client_file_info(filename: str):
     if not check_file_existance(filename):
         raise HTTPException(status_code=400, detail=f"File '{filename}' does not exist in that directory!")
     return file_info(filename)
+
+
+@app.get("/dir/create")
+async def client_directory_create(dirname: str):
+    if check_directory_existance(dirname):
+        raise HTTPException(status_code=400, detail=f"Directory '{dirname}' already exists in that directory!")
+    return directory_create(dirname)
+
 
 # Storage side API
 @app.get("/update")
