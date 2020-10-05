@@ -18,7 +18,7 @@ docker-compose up --build -d
 * [x] **/file/write.** Should allow to put any file to DFS (upload a file from the Client side to the DFS)
 * [x] **/file/delete.** Should allow to delete any file from DFS
 * [x] **/file/info.** Should provide information about the file (any useful information - size, node id, etc.)
-* [ ] **/file/copy.** Should allow to create a copy of file.
+* [x] **/file/copy.** Should allow to create a copy of file.
 * [ ] **/file/move.** Should allow to move a file to the specified path.
 * [ ] **/dir/open.** Should allow to change directory
 * [ ] **/dir/read.** Should return list of files, which are stored in the directory.
