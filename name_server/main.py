@@ -43,7 +43,9 @@ async def client_file_delete(filename: str):
 
 
 @app.get("/file/info")
-async def client_file_delete(filename: str):
+async def client_file_info(filename: str):
+    if not check_file_existance(filename):
+        raise HTTPException(status_code=404, detail=f"File '{filename}' does not exist in that directory!")
     return file_info(filename)
 
 
