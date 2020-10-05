@@ -6,8 +6,6 @@ import requests
 
 app = FastAPI()
 
-DATA_DIR = '/'
-
 
 @app.post('/file/create',
     summary='Create block',
@@ -22,10 +20,9 @@ async def create(servers: list, filename: str):
     servers: list of ip addresses with corresponding port where to create the file
     filename: name of file that client wants to create
     '''
-    block_address = DATA_DIR + filename
-    with open(block_address, 'w'):
+    with open(filename, 'w'):
         pass
-    if not os.path.isfile(block_address):
+    if not os.path.isfile(filename):
         return Response(status_code=404)
     if len(servers) > 1:
         forward_create(servers, filename)
@@ -49,7 +46,7 @@ async def put(servers: list, file: UploadFile = File(...)):
     servers: list of ip addresses with corresponding port where to replicate the file
     file: file itself to upload, it's name I suppose in format of str
     '''
-    with open(DATA_DIR + file.filename, 'wb') as buffer:
+    with open(file.filename, 'wb') as buffer:
         shutil.copyfileobj(file.file, buffer)
     if len(servers) > 1:
         forward_put(servers, file)
@@ -65,7 +62,7 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
     servers = servers[1:]
 
     files = {
-        'file': (file.filename, open(DATA_DIR + file.filename, 'rb')),
+        'file': (file.filename, open(file.filename, 'rb')),
     }
 
     requests.post('http://' + server + '/file/put', files=files)
@@ -78,10 +75,9 @@ async def get(filename: str):
     '''
     filename: name of file that client wants to get
     '''
-    block_address = DATA_DIR + filename
-    if not os.path.isfile(block_address):
+    if not os.path.isfile(filename):
         raise HTTPException(status_code=400, detail=f'File "{filename}" does not exist in directory!')
-    with open(block_address) as f:
+    with open(filename) as f:
         return f.read() 
 
 
@@ -99,10 +95,9 @@ async def copy(servers: list, filename: str, newfilename: str):
     filename: name of file that client wants to copy
     newfilename: name of file copy
     '''
-    new_block_address = DATA_DIR + newfilename
-    with open(DATA_DIR + filename, 'rb') as f, open(new_block_address) as copyfile:
+    with open(filename, 'rb') as f, open(newfilename) as copyfile:
         shutil.copyfileobj(f, copyfile)
-    if not os.path.isfile(new_block_address):
+    if not os.path.isfile(newfilename):
         return Response(status_code=404)
     if len(servers) > 1:
         forward_copy(servers, filename, newfilename)
@@ -134,11 +129,10 @@ async def delete(servers: list, filename: str):
     servers: list of ip addresses with corresponding port where to delete the file
     filename: name of file that client wants to delete
     '''
-    block_address = DATA_DIR + filename
-    if not os.path.isfile(block_address):
+    if not os.path.isfile(filename):
         return Response(status_code=404)
     else:
-        os.remove(block_address)
+        os.remove(filename)
     if len(servers) > 1:
         forward_delete(servers, filename)
     return Response(status_code=200)
