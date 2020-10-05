@@ -105,7 +105,7 @@ def file_create(filename: str, filesize: int):
     blocks_num = get_block_num(filesize)
     blocks_allocation = allocate_blocks(blocks_num)
     create_file_entry(filename, blocks_allocation)
-    return {"filename": filename, "blocks": blocks_allocation}
+    return {"filename": filename, "blocks": blocks_allocation, "block_size": get_data()["block_size"]}
 
 
 def file_read(filename: str):
@@ -114,7 +114,7 @@ def file_read(filename: str):
     for block in blocks:
         block["address"] = block.pop("addresses")[0]
         result.append(block)
-    return {"filename": filename, "blocks": result}
+    return {"filename": filename, "blocks": result, "block_size": get_data()["block_size"]}
 
 
 def file_delete(filename: str):
@@ -123,7 +123,7 @@ def file_delete(filename: str):
     fsimage = data['fsimage']
     file_allocation = fsimage[client_cursor]["files"].pop(filename)
     update_data("fsimage", fsimage)
-    return {"filename": filename, "blocks": file_allocation}
+    return {"filename": filename, "blocks": file_allocation, "block_size": get_data()["block_size"]}
 
 
 def file_info(filename: str):
@@ -131,4 +131,4 @@ def file_info(filename: str):
     client_cursor = data['client_cursor']
     fsimage = data['fsimage']
     file_allocation = fsimage[client_cursor]["files"][filename]
-    return {"filename": filename, "blocks": file_allocation}
+    return {"filename": filename, "blocks": file_allocation, "block_size": get_data()["block_size"]}
