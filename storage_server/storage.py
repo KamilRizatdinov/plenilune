@@ -8,6 +8,41 @@ app = FastAPI()
 
 DATA_DIR = '/'
 
+
+@app.post('/file/create',
+    summary='Create block',
+    response_class=Response,
+    responses={
+        200: {'message': 'Block is successfully created'},
+        404: {'message': 'Block is not created'},
+    },
+)
+async def create(servers: list, filename: str):
+    '''
+    servers: list of ip addresses with corresponding port where to create the file
+    filename: name of file that client wants to create
+    '''
+    block_address = DATA_DIR + filename
+    with open(block_address, 'w'):
+        pass
+    if not os.path.isfile(block_address):
+        return Response(status_code=404)
+    
+    forward_create(servers, filename)
+    return Response(status_code=200)
+
+
+async def forward_create(servers: list, filename: str):
+    '''
+    servers: list of ip addresses with corresponding port where to create the file
+    filename: name of file that client wants to create
+    '''
+    server = servers[0]
+    servers = servers[1:]
+
+    requests.post('http://' + server + 'file/create', data={'servers': servers, 'filename': filename},)
+
+
 @app.post('/file/put')
 async def put(servers: list, file: UploadFile = File(...)):
     '''
@@ -85,3 +120,4 @@ async def forward_delete(servers: list, filename: str):
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
+
