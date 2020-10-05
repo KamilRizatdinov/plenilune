@@ -48,16 +48,6 @@ async def client_file_info(filename: str):
         raise HTTPException(status_code=404, detail=f"File '{filename}' does not exist in that directory!")
     return file_info(filename)
 
-
-@app.get("/write")
-async def client_write(operation_type: str):
-    return {"message": "Write request recieved!"}
-
-
-@app.get("/fetch")
-async def client_write():
-    return {"message": "Fetch request recieved!"}
-
 # Storage side API
 @app.get("/update")
 async def storage_update():
