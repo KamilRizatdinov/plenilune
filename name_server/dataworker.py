@@ -154,7 +154,7 @@ def check_directory_existance(dirname: str):
     data = get_data()
     client_cursor = data['client_cursor']
     fsimage = data['fsimage']
-    if dirname in fsimage[client_cursor]["dirs"]:
+    if dirname in fsimage[client_cursor]["dirs"] or dirname == "..":
         return True
     return False
 
@@ -172,6 +172,15 @@ def directory_create(dirname: str):
 def directory_open(dirname: str):
     data = get_data()
     client_cursor = data['client_cursor']
-    client_cursor = f'{client_cursor}/{dirname}'
-    update_data("client_cursor", client_cursor)
-    return {"detail": f"Your current directory: {client_cursor}"}
+    if dirname != "..":
+        client_cursor = f'{client_cursor}/{dirname}'
+        update_data("client_cursor", client_cursor)
+        return {"detail": f"Your current directory: {client_cursor}"}
+    else:
+        if client_cursor == '.':
+            return {"detail": f"Your current directory: {client_cursor}"}
+        else:
+            client_cursor = '/'.join(client_cursor.split("/")[:-1])
+            update_data("client_cursor", client_cursor)
+            return {"detail": f"Your current directory: {client_cursor}"}
+
