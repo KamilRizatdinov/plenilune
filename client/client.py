@@ -3,40 +3,38 @@ import os
 import requests
 import fire
 
-name_server_address = "http://0.0.0.0"
-name_server_port = 80
+name_server_address = "http://0.0.0.0:80"
 
 
 def write(filename: str):
-    print("Write", filename, "command received!")
     filesize = os.path.getsize(filename)
-    params = {"filename": filename, "filesize": filesize}
     url = name_server_address + "/file/write"
-    print("Connecting to Name Server...")
-    response = requests.get(url, params)
+    response = requests.get(f'{name_server_address}/file/write', {"filename": filename, "filesize": filesize})
 
     data = response.json()
     if response.status_code != 200:
         print(response.json()["detail"])
         return
+    
     blocks = data["blocks"]
     size = data['block_size']
-
     file = open(filename, 'rb')
-    print("Connecting to Data Servers...")
+
     for block in blocks:
         block_name = block["block_name"]
         storage_server_addresses = block["addresses"]
+
         response = requests.post(
             f'http://{storage_server_addresses[0]}/file/put',
             data={'servers': storage_server_addresses},
             files={'file': (block_name, file.read(size))}
         )
+
         if response.status_code != 200:
-            print("Something went wrong:", response.status_code, response.reason)
+            print(response.json()["detail"])
             return
+        
         print(response.json())
-    print("You had successfully upload the file!")
 
 
 def info(filename):
