@@ -31,7 +31,6 @@ async def client_status():
 
 @app.get("/init")
 async def client_init():
-    app.logger.debug("Here Is Your Error Log")
     dump_data()
     return {"detail": "File system initialized"}
 
