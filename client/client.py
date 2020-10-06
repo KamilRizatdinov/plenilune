@@ -144,7 +144,7 @@ def copy(filename, destination):
     blocks = data["blocks"]
     for block in blocks:
         storage_server_addresses = block["addresses"]
-        response = requests.get(f'http://{storage_server_addresses[0]}/file/copy',
+        response = requests.post(f'http://{storage_server_addresses[0]}/file/copy',
                                 json={"servers": storage_server_addresses, "filename": block["block_name"], "newfilename": block["copy_name"]})
 
         if response.status_code != 200:
