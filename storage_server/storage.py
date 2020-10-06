@@ -237,7 +237,7 @@ async def delete(servers: List[str] = Body(...), filename: str = Body(...)):
     return Response(status_code=200)
 
 
-async def forward_delete(servers: list, filename: str):
+async def forward_delete(servers: List[str], filename: str):
     '''
     servers: list of ip addresses with corresponding port where to delete the file
     filename: name of file that client wants to delete
@@ -250,7 +250,7 @@ async def forward_delete(servers: list, filename: str):
     response = requests.post('http://' + server + '/file/delete', json={'servers': servers, 'filename': filename})
 
     if response.status_code != 200:
-        logger.error(f'Something went wrong: {response.json()["detail"]}')
+        logger.error(f'Something went wrong: {response.status_code}')
     
     app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
 
