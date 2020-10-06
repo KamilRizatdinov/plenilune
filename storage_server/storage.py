@@ -210,7 +210,7 @@ async def forward_copy(data: FileCopy):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.post('http://' + server + '/file/copy', data=data)
+    response = requests.post('http://' + server + '/file/copy', json=data)
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
