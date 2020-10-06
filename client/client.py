@@ -8,7 +8,8 @@ name_server_address = "127.0.0.1:80" #"3.22.44.23:80"
 
 def write(filename: str):
     filesize = os.path.getsize(filename)
-    response = requests.get(f'http://{name_server_address}/file/write', {"filename": filename, "filesize": filesize})
+    response = requests.get(f'http://{name_server_address}/file/write',
+                            {"filename": filename, "filesize": filesize})
     data = response.json()
 
     if response.status_code != 200:
@@ -25,8 +26,7 @@ def write(filename: str):
 
         response = requests.post(
             f'http://{storage_server_addresses[0]}/file/put',
-            data={'servers': storage_server_addresses},
-            files={'file': (block_name, file.read(size))}
+            {'servers': storage_server_addresses, 'file': (block_name, file.read(size))}
         )
 
         if response.status_code != 200:
@@ -34,41 +34,47 @@ def write(filename: str):
             return
         
         print(response.json())
-    print(f"File uploaded: '{filename}'")
+    print(f'File uploaded: {filename}')
 
 
 def info(filename):
-    response = requests.get(f'http://{name_server_address}/file/info', {"filename": filename})
+    response = requests.get(f'http://{name_server_address}/file/info',
+                            {"filename": filename})
 
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    
-    print(data = response.json())
+
+    data = response.json()
+    print(data)
 
 
 def delete(filename):
-    response = requests.get(f'http://{name_server_address}/file/delete', {"filename": filename})
+    response = requests.get(f'http://{name_server_address}/file/delete',
+                            {"filename": filename})
 
     if response.status_code != 200:
         print(response.json()["detail"])
         return
+
     data = response.json()
     blocks = data["blocks"]
     print("Connecting to Data Servers...")
+
     for block in blocks:
         block_name = block["name"]
         storage_server_addresses = block["addresses"]
         response = requests.delete(
             f'http://{storage_server_addresses[0]}/file/delete',
-            data={'servers': storage_server_addresses},
-            files={'filename': block_name}
+            params={'servers': storage_server_addresses, 'filename': block_name}
         )
+
         if response.status_code != 200:
             print("Something went wrong:", response.status_code, response.reason)
             return
+
         print(response.json())
-    print("You have successfully deleted the file!")
+    print(f'File deleted: {filename}')
 
 
 def initialize():
@@ -81,7 +87,8 @@ def initialize():
 
 
 def read(filename):
-    response = requests.get(f'http://{name_server_address}/file/read', {"filename": filename})
+    response = requests.get(f'http://{name_server_address}/file/read',
+                            {"filename": filename})
     data = response.json()
 
     if response.status_code != 200:
@@ -90,22 +97,24 @@ def read(filename):
     
     file = open(filename, "w+")
     blocks = data["blocks"]
-    block_size = data["block_size"]
     
     for block in blocks:
         block_name = block["block_name"]
         storage_server_addresses = block["addresses"]
-        response = requests.get(f'http://{storage_server_addresses[0]}/file/get', {"filename": block_name})
+        response = requests.get(f'http://{storage_server_addresses[0]}/file/get',
+                                {"filename": block_name})
 
         if response.status_code == 200:
             file.write(response.json())
         else:
             print(response.json()["detail"])
-    print(f"File downloaded: '{filename}'")
+
+    print(f'File downloaded: {filename}')
 
 
 def create(filename):
-    response = requests.get(f'http://{name_server_address}/file/create', {"filename": filename})
+    response = requests.get(f'http://{name_server_address}/file/create',
+                            {"filename": filename})
     data = response.json()
 
     if response.status_code != 200:
@@ -116,27 +125,38 @@ def create(filename):
     for block in blocks:
         storage_server_addresses = block["addresses"]
         response = requests.get(f'http://{storage_server_addresses[0]}/file/create',
-                                params={"servers": storage_server_addresses, "filename": filename})
+                                {"servers": storage_server_addresses, "filename": filename})
         if response.status_code != 200:
-            print("Somethiing went wrong:", response.status_code)
+            print("Something went wrong:", response.status_code)
 
-    print(f"File created: {filename}")
+    print(f'File created: {filename}')
 
 
 def copy(filename, destination):
-    response = requests.get(f'http://{name_server_address}/file/copy', {"filename": filename, "destination": destination})
+    newfilename = filename + "(1)"
+    response = requests.get(f'http://{name_server_address}/file/copy',
+                            {"filename": filename, "destination": destination})
     data = response.json()
 
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    
-    print(data)
-    print("You had successfully copied the file!")
+
+    blocks = data["blocks"]
+    for block in blocks:
+        storage_server_addresses = block["addresses"]
+        response = requests.get(f'http://{storage_server_addresses[0]}/file/copy',
+                                {"servers": storage_server_addresses, "filename": filename, "newfilename": newfilename})
+
+        if response.status_code != 200:
+            print("Something went wrong:", response.status_code)
+
+    print(f'File copied: {newfilename}')
 
 
 def move(filename, destination):
-    response = requests.get(f'http://{name_server_address}/file/move', {"filename": filename, "destination": destination})
+    response = requests.get(f'http://{name_server_address}/file/move',
+                            {"filename": filename, "destination": destination})
 
     if response.status_code != 200:
         print(response.json()["detail"])
@@ -146,7 +166,8 @@ def move(filename, destination):
 
 
 def create_dir(dirname):
-    response = requests.get(f'http://{name_server_address}/dir/create', {"dirname": dirname})
+    response = requests.get(f'http://{name_server_address}/dir/create',
+                            {"dirname": dirname})
 
     if response.status_code != 200:
         print(response.json()["detail"])
@@ -156,7 +177,8 @@ def create_dir(dirname):
 
 
 def open_dir(dirname):
-    response = requests.get(f'http://{name_server_address}/dir/open', {"dirname": dirname})
+    response = requests.get(f'http://{name_server_address}/dir/open',
+                            {"dirname": dirname})
 
     if response.status_code != 200:
         print(response.json()["detail"])
@@ -166,7 +188,8 @@ def open_dir(dirname):
 
 
 def delete_dir(dirname, flag=None):
-    response = requests.get(f'http://{name_server_address}/dir/delete', {"dirname": dirname, "flag": flag})
+    response = requests.get(f'http://{name_server_address}/dir/delete',
+                            {"dirname": dirname, "flag": flag})
 
     if response.status_code != 200:
         print(response.json()["detail"])
