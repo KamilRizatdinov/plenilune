@@ -39,13 +39,12 @@ def write(filename: str):
 
 def info(filename):
     response = requests.get(f'http://{name_server_address}/file/info', {"filename": filename})
-    data = response.json()
 
     if response.status_code != 200:
         print(response.json()["detail"])
         return
     
-    print(data)
+    print(data = response.json())
 
 
 def delete(filename):
@@ -106,15 +105,13 @@ def read(filename):
 
 
 def create(filename):
-    print("Create", filename, "command received!")
-    params = {"filename": filename}
-    url = name_server_address + "/file/create"
-    print("Connecting to Name Server...")
-    response = requests.get(f'http://{url}', params)
+    response = requests.get(f'http://{name_server_address}/file/create', {"filename": filename})
     data = response.json()
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
+    
     blocks = data["blocks"]
     for block in blocks:
         storage_server_addresses = block["addresses"]
@@ -123,96 +120,79 @@ def create(filename):
         if response.status_code != 200:
             print("Somethiing went wrong:", response.status_code)
 
-    print("You had successfully created a new file!")
+    print(f"File created: {filename}")
 
 
-def copy(filename):
-    print("Copy", filename, "command received!")
-    filesize = os.path.getsize(filename)
-    params = {"filename": filename, "filesize": filesize}
-    url = name_server_address + "/file/copy"
-    print("Connecting to Name Server...")
-    response = requests.get(f'http://{url}', params)
+def copy(filename, destination):
+    response = requests.get(f'http://{name_server_address}/file/copy', {"filename": filename, "destination": destination})
     data = response.json()
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    src_blocks = data["src_blocks"]
-    dest_blocks = data["dest_blocks"]
-
+    
+    print(data)
     print("You had successfully copied the file!")
 
 
 def move(filename, destination):
-    print("Move", filename, "to", destination, "command received!")
-    params = {"filename": filename, "destination": destination}
-    url = name_server_address + "/file/move"
-    print("Connecting to Name Server...")
-    response = requests.get(f'http://{url}', params)
+    response = requests.get(f'http://{name_server_address}/file/move', {"filename": filename, "destination": destination})
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    print("You had successfully moved the file!")
+    
+    print(response.json()["detail"])
 
 
 def create_dir(dirname):
-    print("Create directory", dirname, "command received!")
-    params = {"dirname": dirname}
-    url = name_server_address + "/dir/create"
-    print("Connecting to Name Server...")
-    response = requests.get(f'http://{url}', params)
+    response = requests.get(f'http://{name_server_address}/dir/create', {"dirname": dirname})
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    print("You had successfully created a new directory!")
+    
+    print(response.json()["detail"])
 
 
 def open_dir(dirname):
-    print("Open directory", dirname, "command received!")
-    params = {"dirname": dirname}
-    url = name_server_address + "/dir/open"
-    print("Connecting to Name Server...")
-    response = requests.get(f'http://{url}', params)
+    response = requests.get(f'http://{name_server_address}/dir/open', {"dirname": dirname})
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    print("You are in", dirname, "directory!")
+
+    print(response.json()["detail"])
 
 
 def delete_dir(dirname, flag=None):
-    print("Delete directory", dirname, "command received!")
-    params = {"dirname": dirname, "flag": flag}
-    url = name_server_address + "/dir/delete"
-    print("Connecting to Name Server...")
-    response = requests.get(f'http://{url}', params)
+    response = requests.get(f'http://{name_server_address}/dir/delete', {"dirname": dirname, "flag": flag})
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    print("You had successfully deleted the directory!")
+    
+    print(response.json()["detail"])
 
 
 def read_dir():
-    print("Read directory command received!")
-    url = name_server_address + "/dir/read"
-    print("Connecting to Name Server...")
-    response = requests.get(f'http://{url}')
+    response = requests.get(f'http://{name_server_address}/dir/read')
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    data = response.json()
-    print(data)
+    
+    print(response.json())
 
 
 def status():
-    print("Status command received!")
-    url = name_server_address + "/status"
-    print("Connecting to Name Server...")
-    response = requests.get(f'http://{url}')
+    response = requests.get(f'http://{name_server_address}/status')
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    data = response.json()
-    print(data)
+    
+    print(response.json())
 
 
 if __name__ == "__main__":
