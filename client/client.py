@@ -1,5 +1,5 @@
 import os
-
+import pprint
 import requests
 import fire
 
@@ -46,7 +46,7 @@ def info(filename):
         return
 
     data = response.json()
-    print(data)
+    pprint.pprint(data)
 
 
 def delete(filename):
@@ -59,7 +59,6 @@ def delete(filename):
 
     data = response.json()
     blocks = data["blocks"]
-    print("Connecting to Data Servers...")
 
     for block in blocks:
         block_name = block["name"]
@@ -215,7 +214,7 @@ def status():
         print(response.json()["detail"])
         return
     
-    print(response.json())
+    pprint.pprint(response.json())
 
 
 if __name__ == "__main__":
