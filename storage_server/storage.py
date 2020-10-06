@@ -1,6 +1,7 @@
 from pathlib import Path
 import uvicorn
 from fastapi import FastAPI, HTTPException, UploadFile, File, Response, Body
+from typing import List
 import os
 import shutil
 import requests
@@ -36,7 +37,7 @@ DATA_DIR = '/data/'
 #     },
 # )
 @app.get('/file/create')
-async def create(servers: list, filename: str):
+async def create(servers: List[str], filename: str):
     '''
     servers: list of ip addresses with corresponding port where to create the file
     filename: name of file that client wants to create
@@ -68,7 +69,7 @@ async def create(servers: list, filename: str):
     return {'message': 'File is created!'}
 
 
-async def forward_create(servers: list, filename: str):
+async def forward_create(servers: List[str], filename: str):
     '''
     servers: list of ip addresses with corresponding port where to create the file
     filename: name of file that client wants to create
