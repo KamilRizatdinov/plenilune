@@ -25,7 +25,7 @@ async def create(servers: list, filename: str):
     if not os.path.isfile(filename):
         return Response(status_code=404)
     if len(servers) > 1:
-        forward_create(servers, filename)
+        await forward_create(servers, filename)
     return Response(status_code=200)
 
 
@@ -49,7 +49,7 @@ async def put(servers: list, file: UploadFile = File(...)):
     with open(file.filename, 'wb') as buffer:
         shutil.copyfileobj(file.file, buffer)
     if len(servers) > 1:
-        forward_put(servers, file)
+        await forward_put(servers, file)
     return {'filename': file.filename, 'message': 'Data is recieved!'}
 
 
@@ -100,7 +100,7 @@ async def copy(servers: list, filename: str, newfilename: str):
     if not os.path.isfile(newfilename):
         return Response(status_code=404)
     if len(servers) > 1:
-        forward_copy(servers, filename, newfilename)
+        await forward_copy(servers, filename, newfilename)
     return Response(status_code=200)
 
 
@@ -134,7 +134,7 @@ async def delete(servers: list, filename: str):
     else:
         os.remove(filename)
     if len(servers) > 1:
-        forward_delete(servers, filename)
+        await forward_delete(servers, filename)
     return Response(status_code=200)
 
 
