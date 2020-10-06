@@ -49,11 +49,11 @@ async def put(servers: list, file: UploadFile = File(...)):
     with open(file.filename, 'wb') as buffer:
         shutil.copyfileobj(file.file, buffer)
     if len(servers) > 1:
-        await forward_put(servers, file)
+        forward_put(servers, file)
     return {'filename': file.filename, 'message': 'Data is recieved!'}
 
 
-async def forward_put(servers: list, file: UploadFile = File(...)):
+def forward_put(servers: list, file: UploadFile = File(...)):
     '''
     servers: list of ip addresses with corresponding port where to replicate the file
     file: file itself to upload, it's name I suppose in format of str
@@ -64,8 +64,9 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
     files = {
         'file': (file.filename, open(file.filename, 'rb')),
     }
-
+    print(f"Forvard put request to {server}")
     requests.post('http://' + server + '/file/put', data={'servers': servers}, files=files)
+    print(requests.json())
 
 
 # block_uuid was replaced by filename because of 
