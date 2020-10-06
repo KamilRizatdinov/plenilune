@@ -1,6 +1,6 @@
 from pathlib import Path
 import uvicorn
-from fastapi import FastAPI, HTTPException, UploadFile, File, Response
+from fastapi import FastAPI, HTTPException, UploadFile, File, Response, Body
 import os
 import shutil
 import requests
@@ -228,13 +228,11 @@ async def forward_copy(servers: list, filename: str, newfilename: str):
         404: {'message': 'Block is not found'},
     },
 )
-async def delete(block: BlockDelete):
+async def delete(servers: list = Body(...), filename: str = Body(...)):
     '''
     servers: list of ip addresses with corresponding port where to delete the file
     filename: name of file that client wants to delete
     '''
-    servers = block.servers
-    filename = block.filename
     file_address = DATA_DIR + filename
 
     if not os.path.isfile(file_address):
@@ -252,7 +250,7 @@ async def delete(block: BlockDelete):
     app.logger.debug('Storage server is ready to forward request to other servers.')
 
     if len(servers) > 1:
-        await forward_delete(block)
+        await forward_delete(servers, filename)
     
     app.logger.debug('Storage server finished with deleting the file.')
     app.logger.debug('Storage server sent response with status code 200.')
@@ -260,13 +258,11 @@ async def delete(block: BlockDelete):
     return Response(status_code=200)
 
 
-async def forward_delete(block: BlockDelete):
+async def forward_delete(servers: list, filename: str):
     '''
     servers: list of ip addresses with corresponding port where to delete the file
     filename: name of file that client wants to delete
     '''
-    servers = block.servers
-    filename = block.filename
     server = servers[1]
     servers = servers[1:]
 
