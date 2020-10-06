@@ -7,7 +7,6 @@ import requests
 import logging
 
 from custom_logging import CustomizeLogger
-from schemas import *
 
 app = FastAPI()
 
@@ -167,17 +166,17 @@ async def get(filename: str):
         400: {'message': 'Copy is not created'},
     },
 )
-async def copy(data: FileCopy):
+async def copy(servers: list, filename: str, newfilename: str):
     '''
     servers: list of ip addresses with corresponding port where file need to be copied
     filename: name of file that client wants to copy
     newfilename: name of file copy
     '''
-    app.logger.debug(f'Storage server recieved servers list: {data.servers}.')
-    app.logger.debug(f'Storage server is copying file named {data.filename} to file with name {data.newfilename}.')
+    app.logger.debug(f'Storage server recieved servers list: {servers}.')
+    app.logger.debug(f'Storage server is copying file named {filename} to file with name {newfilename}.')
 
-    file_address = DATA_DIR + data.filename
-    new_file_address = DATA_DIR + data.newfilename
+    file_address = DATA_DIR + filename
+    new_file_address = DATA_DIR + newfilename
 
     with open(file_address, 'rb') as f, open(new_file_address, 'wb') as copyfile:
         shutil.copyfileobj(f, copyfile)
@@ -187,11 +186,11 @@ async def copy(data: FileCopy):
         logger.error('Storage server raised an error with status code 400.')
         return Response(status_code=400)
     
-    app.logger.debug(f'Storage server copied the file {data.filename} into {data.newfilename}.')
+    app.logger.debug(f'Storage server copied the file {filename} into {newfilename}.')
     app.logger.debug('Storage server is ready to forward request to other servers.')
 
-    if len(data.servers) > 1:
-        await forward_copy(data)
+    if len(servers) > 1:
+        await forward_copy(servers, filename, newfilename)
 
     app.logger.debug('Storage server finished with copying the file.')
     app.logger.debug('Storage server sent response with status code 200.')
@@ -199,18 +198,18 @@ async def copy(data: FileCopy):
     return Response(status_code=200)
 
 
-async def forward_copy(data: FileCopy):
+async def forward_copy(servers: list, filename: str, newfilename: str):
     '''
     servers: list of ip addresses with corresponding port where file need to be copied
     filename: name of file that client wants to copy
     newfilename: name of file copy
     '''
-    server = data.servers[1]
-    servers = data.servers[1:]
+    server = servers[1]
+    servers = servers[1:]
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.post('http://' + server + '/file/copy', json=data)
+    response = requests.post('http://' + server + '/file/copy', data={'servers': servers, 'filename': filename, 'newfilename': newfilename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
