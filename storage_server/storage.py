@@ -1,10 +1,10 @@
+from pathlib import Path
 import uvicorn
 from fastapi import FastAPI, HTTPException, UploadFile, File, Response
 import os
 import shutil
 import requests
 import logging
-import uvicorn
 
 from custom_logging import CustomizeLogger
 

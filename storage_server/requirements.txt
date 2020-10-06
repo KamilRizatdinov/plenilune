@@ -4,8 +4,11 @@ click==7.1.2
 fastapi==0.61.1
 h11==0.10.0
 idna==2.10
+loguru==0.5.3
+pydantic==1.6.1
+python-multipart==0.0.5
 requests==2.24.0
+six==1.15.0
 starlette==0.13.6
 urllib3==1.25.10
 uvicorn==0.12.1
-python-multipart
