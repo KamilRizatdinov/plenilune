@@ -101,6 +101,13 @@ def create_file_entry(filename: str, blocks_allocation: list):
     update_data("fsimage", fsimage)
 
 
+def init():
+    storage_servers = get_data()['storage_servers']
+    result = [server['hostname'] for server in storage_servers]
+    dump_data()
+    return result
+
+
 def file_create(filename: str, filesize: int):
     blocks_num = get_block_num(filesize)
     blocks_allocation = allocate_blocks(blocks_num)

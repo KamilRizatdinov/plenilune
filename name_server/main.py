@@ -31,8 +31,7 @@ async def client_status():
 
 @app.get("/init")
 async def client_init():
-    dump_data()
-    return {"detail": "File system initialized"}
+    return init()
 
 
 @app.get("/file/create")
