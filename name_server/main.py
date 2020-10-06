@@ -31,7 +31,7 @@ async def client_status():
 
 @app.get("/init")
 async def client_init():
-    request.app.logger.info("Here Is Your Error Log")
+    app.logger.debug("Here Is Your Error Log")
     dump_data()
     return {"detail": "File system initialized"}
 
@@ -125,4 +125,4 @@ async def storage_update():
 
 
 if __name__ == '__main__':
-      uvicorn.run(app, port=8000)
+    uvicorn.run(app, port=8000)
