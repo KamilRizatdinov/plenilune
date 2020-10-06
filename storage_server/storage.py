@@ -7,6 +7,7 @@ import requests
 import logging
 
 from custom_logging import CustomizeLogger
+from schemas import *
 
 app = FastAPI()
 
@@ -227,12 +228,13 @@ async def forward_copy(servers: list, filename: str, newfilename: str):
         404: {'message': 'Block is not found'},
     },
 )
-async def delete(servers: list, filename: str):
+async def delete(block: BlockDelete):
     '''
     servers: list of ip addresses with corresponding port where to delete the file
     filename: name of file that client wants to delete
     '''
-
+    servers = block.servers
+    filename = block.filename
     file_address = DATA_DIR + filename
 
     if not os.path.isfile(file_address):

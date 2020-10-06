@@ -64,9 +64,9 @@ def delete(filename):
     for block in blocks:
         block_name = block["block_name"]
         storage_server_addresses = block["addresses"]
-        response = requests.get(
+        response = requests.post(
             f'http://{storage_server_addresses[0]}/file/delete',
-            {'servers': storage_server_addresses, 'filename': block_name}
+            data={'servers': storage_server_addresses, 'filename': block_name}
         )
 
         if response.status_code != 200:
