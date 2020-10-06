@@ -141,10 +141,9 @@ def copy(filename):
     print("You had successfully copied the file!")
 
 
-def move(filename, path):
-    print("Move", filename, "to", path, "command received!")
-    filesize = os.path.getsize(filename)
-    params = {"filename": filename, "filesize": filesize, "path": path}
+def move(filename, destination):
+    print("Move", filename, "to", destination, "command received!")
+    params = {"filename": filename, "destination": destination}
     url = name_server_address + "/file/move"
     print("Connecting to Name Server...")
     response = requests.get(url, params)
