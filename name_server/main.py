@@ -2,9 +2,10 @@ from pathlib import Path
 import uuid
 
 from fastapi import FastAPI, HTTPException
-import uvicorn
 import logging
+import uvicorn
 
+from custom_logging import CustomizeLogger
 from dataworker import *
 
 logger = logging.getLogger(__name__)
