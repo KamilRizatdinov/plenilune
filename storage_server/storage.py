@@ -252,7 +252,7 @@ async def delete(block: BlockDelete):
     app.logger.debug('Storage server is ready to forward request to other servers.')
 
     if len(servers) > 1:
-        await forward_delete(servers, filename)
+        await forward_delete(block)
     
     app.logger.debug('Storage server finished with deleting the file.')
     app.logger.debug('Storage server sent response with status code 200.')
@@ -260,17 +260,19 @@ async def delete(block: BlockDelete):
     return Response(status_code=200)
 
 
-async def forward_delete(servers: list, filename: str):
+async def forward_delete(block: BlockDelete):
     '''
     servers: list of ip addresses with corresponding port where to delete the file
     filename: name of file that client wants to delete
     '''
+    servers = block.servers
+    filename = block.filename
     server = servers[1]
     servers = servers[1:]
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.get('http://' + server + '/file/delete', data={'servers': servers, 'filename': filename})
+    response = requests.post('http://' + server + '/file/delete', data={'servers': servers, 'filename': filename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
