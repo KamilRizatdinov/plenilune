@@ -66,14 +66,14 @@ def delete(filename):
         storage_server_addresses = block["addresses"]
         response = requests.post(
             f'http://{storage_server_addresses[0]}/file/delete',
-            data={'servers': storage_server_addresses, 'filename': block_name}
+            json={'servers': storage_server_addresses, 'filename': block_name}
         )
+        print(storage_server_addresses, block_name)
 
         if response.status_code != 200:
             print("Something went wrong:", response.status_code, response.reason)
             return
-
-        print(response.json())
+        
     print(f'File deleted: {filename}')
 
 
