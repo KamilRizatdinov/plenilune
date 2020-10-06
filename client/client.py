@@ -79,11 +79,12 @@ def delete(filename):
 
 def initialize():
     response = requests.get(f'http://{name_server_address}/init')
-
-    if response.status_code == 200:
-        print("File system initialized")
-    else:
-        print("Something went wrong:", response.status_code, response.reason)
+    storage_server_addresses = response.json()
+    response = requests.post(
+            f'http://{storage_server_addresses[0]}/init',
+            json={'servers': storage_server_addresses}
+    )
+    print('System initialized')
 
 
 def read(filename):
