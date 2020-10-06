@@ -71,7 +71,7 @@ async def forward_create(servers: List[str], filename: str):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.get('http://' + server + '/file/create', json={'servers': servers, 'filename': filename})
+    response = requests.post('http://' + server + '/file/create', json={'servers': servers, 'filename': filename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
