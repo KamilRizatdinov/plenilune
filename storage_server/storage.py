@@ -24,7 +24,7 @@ def create_app() -> FastAPI:
 
 app = create_app()
 
-DATA_DIR = '/tmp/'
+DATA_DIR = '/data/'
 
 @app.post('/file/create',
     summary='Create block',
