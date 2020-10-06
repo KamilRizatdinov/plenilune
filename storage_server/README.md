@@ -3,17 +3,13 @@
 ### How to launch storage server:
 #### Prerequisites:
 * docker engine (follow instructions from [here](https://docs.docker.com/get-docker/))
+* docker compose (follow instructions from [here](https://docs.docker.com/compose/install/))
 #### Instruction:
-* This command creates an image for storage server:
+* Run nessesary containers in daemon mode with the following command:
 ```
-docker build -t storage .
+docker-compose up --build -d 
 ```
-* This command runs 3 applications logically dividing port 8000 of the machine to 8001, 8002, 8003(really questionable)
-```
-docker run -p 8001:8000 storage
-docker run -p 8002:8000 storage
-docker run -p 8003:8000 storage
-```
+* Go [here](http://52.14.131.8:8000/docs) in order to view a storage server's API documentation
 
 All the information you read here is found in this article: https://www.edureka.co/blog/apache-hadoop-hdfs-architecture/
 
