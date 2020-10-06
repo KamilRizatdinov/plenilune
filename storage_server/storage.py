@@ -34,7 +34,7 @@ DATA_DIR = '/data/'
 #         404: {'message': 'Block is not created'},
 #     },
 # )
-@app.post('/file/create')
+@app.get('/file/create')
 async def create(servers: list, filename: str):
     '''
     servers: list of ip addresses with corresponding port where to create the file
@@ -77,7 +77,7 @@ async def forward_create(servers: list, filename: str):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.post('http://' + server + '/file/create', data={'servers': servers, 'filename': filename})
+    response = requests.get('http://' + server + '/file/create', {'servers': servers, 'filename': filename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
@@ -160,7 +160,7 @@ async def get(filename: str):
         return f.read() 
 
 
-@app.post('/file/copy',
+@app.get('/file/copy',
     summary='Copy block',
     response_class=Response,
     responses={
@@ -211,7 +211,7 @@ async def forward_copy(servers: list, filename: str, newfilename: str):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.post('http://' + server + '/file/copy', data={'servers': servers, 'filename': filename, 'newfilename': newfilename})
+    response = requests.get('http://' + server + '/file/copy', {'servers': servers, 'filename': filename, 'newfilename': newfilename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
@@ -219,7 +219,7 @@ async def forward_copy(servers: list, filename: str, newfilename: str):
     app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
 
 
-@app.delete('/file/delete',
+@app.get('/file/delete',
     summary='Delete block',
     response_class=Response,
     responses={
@@ -268,7 +268,7 @@ async def forward_delete(servers: list, filename: str):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.post('http://' + server + '/file/delete', data={'servers': servers, 'filename': filename})
+    response = requests.get('http://' + server + '/file/delete', data={'servers': servers, 'filename': filename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')

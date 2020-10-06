@@ -62,11 +62,11 @@ def delete(filename):
     blocks = data["blocks"]
 
     for block in blocks:
-        block_name = block["name"]
+        block_name = block["block_name"]
         storage_server_addresses = block["addresses"]
-        response = requests.delete(
+        response = requests.get(
             f'http://{storage_server_addresses[0]}/file/delete',
-            params={'servers': storage_server_addresses, 'filename': block_name}
+            {'servers': storage_server_addresses, 'filename': block_name}
         )
 
         if response.status_code != 200:
@@ -124,7 +124,7 @@ def create(filename):
     blocks = data["blocks"]
     for block in blocks:
         storage_server_addresses = block["addresses"]
-        response = requests.post(f'http://{storage_server_addresses[0]}/file/create',
+        response = requests.get(f'http://{storage_server_addresses[0]}/file/create',
                                 {"servers": storage_server_addresses, "filename": block["block_name"]})
         if response.status_code != 200:
             print("Something went wrong:", response.status_code)
@@ -144,8 +144,8 @@ def copy(filename, destination):
     blocks = data["blocks"]
     for block in blocks:
         storage_server_addresses = block["addresses"]
-        response = requests.post(f'http://{storage_server_addresses[0]}/file/copy',
-                                params={"servers": storage_server_addresses, "filename": block["block_name"], "newfilename": block["copy_name"]})
+        response = requests.get(f'http://{storage_server_addresses[0]}/file/copy',
+                                {"servers": storage_server_addresses, "filename": block["block_name"], "newfilename": block["copy_name"]})
 
         if response.status_code != 200:
             print("Something went wrong:", response.status_code)
