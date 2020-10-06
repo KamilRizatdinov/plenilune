@@ -106,8 +106,7 @@ def read(filename):
 
 def create(filename):
     print("Create", filename, "command received!")
-    filesize = os.path.getsize(filename)
-    params = {"filename": filename, "filesize": filesize}
+    params = {"filename": filename}
     url = name_server_address + "/file/create"
     print("Connecting to Name Server...")
     response = requests.get(url, params)
@@ -116,7 +115,12 @@ def create(filename):
         print(response.json()["detail"])
         return
     blocks = data["blocks"]
-    size = data['block_size']
+    for block in blocks:
+        storage_server_addresses = block["addresses"]
+        response = requests.get(f'http://{storage_server_addresses[0]}/file/create',
+                                params={"servers": storage_server_addresses, "filename": filename})
+        if response.status_code != 200:
+            print("Somethiing went wrong:", response.status_code)
 
     print("You had successfully created a new file!")
 
@@ -141,15 +145,13 @@ def copy(filename):
 def move(filename, path):
     print("Move", filename, "to", path, "command received!")
     filesize = os.path.getsize(filename)
-    params = {"filename": filename, "filesize": filesize}
+    params = {"filename": filename, "filesize": filesize, "path": path}
     url = name_server_address + "/file/move"
     print("Connecting to Name Server...")
     response = requests.get(url, params)
-    data = response.json()
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-
     print("You had successfully moved the file!")
 
 
@@ -189,12 +191,11 @@ def delete_dir(dirname):
     print("You had successfully delete the directory!")
 
 
-def read_dir(dirname):
-    print("Read directory", dirname, "command received!")
-    params = {"dirname": dirname}
+def read_dir():
+    print("Read directory command received!")
     url = name_server_address + "/dir/read"
     print("Connecting to Name Server...")
-    response = requests.get(url, params)
+    response = requests.get(url)
     if response.status_code != 200:
         print(response.json()["detail"])
         return
@@ -210,5 +211,10 @@ if __name__ == "__main__":
         "init": initialize,
         "info": info,
         "copy": copy,
-        "create": create
+        "create": create,
+        "move": move,
+        "ls": read_dir,
+        "rmdir": delete_dir,
+        "cd": open_dir,
+        "mkdir": create_dir
     })
