@@ -133,7 +133,6 @@ def create(filename):
 
 
 def copy(filename, destination):
-    newfilename = filename + "(1)"
     response = requests.get(f'http://{name_server_address}/file/copy',
                             {"filename": filename, "destination": destination})
     data = response.json()
@@ -146,12 +145,12 @@ def copy(filename, destination):
     for block in blocks:
         storage_server_addresses = block["addresses"]
         response = requests.get(f'http://{storage_server_addresses[0]}/file/copy',
-                                {"servers": storage_server_addresses, "filename": filename, "newfilename": newfilename})
+                                {"servers": storage_server_addresses, "filename": block["block_name"], "newfilename": block["copy_name"]})
 
         if response.status_code != 200:
             print("Something went wrong:", response.status_code)
 
-    print(f'File copied: {newfilename}')
+    print(f'File copied: {destination}')
 
 
 def move(filename, destination):
