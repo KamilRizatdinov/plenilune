@@ -49,19 +49,11 @@ async def put(servers: list, file: UploadFile = File(...)):
     with open(file.filename, 'wb') as buffer:
         shutil.copyfileobj(file.file, buffer)
     if len(servers) > 1:
-        # forward_put(servers, file)
-        server = servers[1]
-        servers = servers[1:]
-
-        files = {
-            'file': (file.filename, open(file.filename, 'rb')),
-        }
-
-        requests.post('http://' + server + '/file/put', data={'servers': servers}, files=files)
+        await forward_put(servers, file)
     return {'filename': file.filename, 'message': 'Data is recieved!'}
 
 
-def forward_put(servers: list, file: UploadFile = File(...)):
+async def forward_put(servers: list, file: UploadFile = File(...)):
     '''
     servers: list of ip addresses with corresponding port where to replicate the file
     file: file itself to upload, it's name I suppose in format of str
