@@ -154,15 +154,8 @@ async def get(filename: str):
         return f.read() 
 
 
-@app.get('/file/copy',
-    summary='Copy block',
-    response_class=Response,
-    responses={
-        200: {'message': 'Copy is successfully created'},
-        400: {'message': 'Copy is not created'},
-    },
-)
-async def copy(servers: list, filename: str, newfilename: str):
+@app.post('/file/copy')
+async def copy(servers: List[str] = Body(...), filename: str = Body(...), newfilename: str = Body(...)):
     '''
     servers: list of ip addresses with corresponding port where file need to be copied
     filename: name of file that client wants to copy
@@ -194,7 +187,7 @@ async def copy(servers: list, filename: str, newfilename: str):
     return Response(status_code=200)
 
 
-async def forward_copy(servers: list, filename: str, newfilename: str):
+async def forward_copy(servers: List[str], filename: str, newfilename: str):
     '''
     servers: list of ip addresses with corresponding port where file need to be copied
     filename: name of file that client wants to copy
@@ -205,7 +198,7 @@ async def forward_copy(servers: list, filename: str, newfilename: str):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.get('http://' + server + '/file/copy', {'servers': servers, 'filename': filename, 'newfilename': newfilename})
+    response = requests.post('http://' + server + '/file/copy', json={'servers': servers, 'filename': filename, 'newfilename': newfilename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
