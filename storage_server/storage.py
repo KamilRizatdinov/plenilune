@@ -48,6 +48,7 @@ async def put(servers: list, file: UploadFile = File(...)):
     '''
     with open(file.filename, 'wb') as buffer:
         shutil.copyfileobj(file.file, buffer)
+    print(servers)
     if len(servers) > 1:
         forward_put(servers, file)
     return {'filename': file.filename, 'message': 'Data is recieved!'}
