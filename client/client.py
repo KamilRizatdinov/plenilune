@@ -3,7 +3,7 @@ import pprint
 import requests
 import fire
 
-name_server_address = "127.0.0.1:80" #"3.22.44.23:80"
+name_server_address = "3.22.44.23:80"
 
 
 def write(filename: str):
@@ -26,7 +26,8 @@ def write(filename: str):
 
         response = requests.post(
             f'http://{storage_server_addresses[0]}/file/put',
-            {'servers': storage_server_addresses, 'file': (block_name, file.read(size))}
+            {'servers': storage_server_addresses},
+            files={'file': (block_name, file.read(size))},
         )
 
         if response.status_code != 200:
