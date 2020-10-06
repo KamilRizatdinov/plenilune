@@ -124,8 +124,8 @@ def create(filename):
     blocks = data["blocks"]
     for block in blocks:
         storage_server_addresses = block["addresses"]
-        response = requests.get(f'http://{storage_server_addresses[0]}/file/create',
-                                {"servers": storage_server_addresses, "filename": filename})
+        response = requests.post(f'http://{storage_server_addresses[0]}/file/create',
+                                {"servers": storage_server_addresses, "filename": block["block_name"]})
         if response.status_code != 200:
             print("Something went wrong:", response.status_code)
 
