@@ -82,6 +82,13 @@ async def client_directory_read():
     return directory_read()
 
 
+@app.get("/dir/delete")
+async def client_directory_delete(dirname: str):
+    if not check_directory_existance(dirname):
+        raise HTTPException(status_code=400, detail=f"Directory '{dirname}' does not exist in that directory!")
+    return directory_delete(dirname)
+
+
 # Storage side API
 @app.get("/update")
 async def storage_update():

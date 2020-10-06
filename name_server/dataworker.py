@@ -110,11 +110,7 @@ def file_create(filename: str, filesize: int):
 
 def file_read(filename: str):
     blocks = get_file_blocks(filename)
-    result = []
-    for block in blocks:
-        block["address"] = block.pop("addresses")[0]
-        result.append(block)
-    return {"filename": filename, "blocks": result, "block_size": get_data()["block_size"]}
+    return {"filename": filename, "blocks": blocks, "block_size": get_data()["block_size"]}
 
 
 def file_copy(filename: str, copy: str):
@@ -192,5 +188,13 @@ def directory_read():
     result = {}
     result['dirs'] = fsimage[client_cursor]['dirs']
     result['files'] = list(fsimage[client_cursor]['files'].keys())
+    return result
+
+
+def directory_delete(dirname: str):
+    data = get_data()
+    client_cursor = data['client_cursor']
+    fsimage = data['fsimage']
+
     return result
 
