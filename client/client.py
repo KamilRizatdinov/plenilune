@@ -56,8 +56,7 @@ def info(filename):
 
 def delete(filename):
     print("Delete", filename, "command received!")
-    filesize = os.path.getsize(filename)
-    params = {"filename": filename, "filesize": filesize}
+    params = {"filename": filename}
     url = name_server_address + "/file/delete"
     print("Connecting to Name Server...")
     response = requests.get(url, params)
@@ -164,7 +163,7 @@ def create_dir(dirname):
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    print("You had successfully create a new directory!")
+    print("You had successfully created a new directory!")
 
 
 def open_dir(dirname):
@@ -179,16 +178,16 @@ def open_dir(dirname):
     print("You are in", dirname, "directory!")
 
 
-def delete_dir(dirname):
+def delete_dir(dirname, flag=None):
     print("Delete directory", dirname, "command received!")
-    params = {"dirname": dirname}
+    params = {"dirname": dirname, "flag": flag}
     url = name_server_address + "/dir/delete"
     print("Connecting to Name Server...")
     response = requests.get(url, params)
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    print("You had successfully delete the directory!")
+    print("You had successfully deleted the directory!")
 
 
 def read_dir():
@@ -207,14 +206,14 @@ if __name__ == "__main__":
     fire.Fire({
         "get": read,
         "put": write,
-        "rm": delete,
-        "init": initialize,
-        "info": info,
+        "rm": delete,           # works
+        "init": initialize,     # works
+        "info": info,           # works
         "copy": copy,
         "create": create,
         "move": move,
-        "ls": read_dir,
-        "rmdir": delete_dir,
-        "cd": open_dir,
-        "mkdir": create_dir
+        "ls": read_dir,         # works
+        "rmdir": delete_dir,    # works
+        "cd": open_dir,         # works
+        "mkdir": create_dir     # works
     })
