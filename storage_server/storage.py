@@ -65,7 +65,7 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
         'file': (file.filename, open(file.filename, 'rb')),
     }
 
-    requests.post('http://' + server + '/file/put', files=files)
+    requests.post('http://' + server + '/file/put', data={'servers': servers}, files=files)
 
 
 # block_uuid was replaced by filename because of 
