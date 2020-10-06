@@ -26,14 +26,15 @@ app = create_app()
 
 DATA_DIR = '/data/'
 
-@app.post('/file/create',
-    summary='Create block',
-    response_class=Response,
-    responses={
-        200: {'message': 'Block is successfully created'},
-        404: {'message': 'Block is not created'},
-    },
-)
+# @app.post('/file/create',
+#     summary='Create block',
+#     response_class=Response,
+#     responses={
+#         200: {'message': 'Block is successfully created'},
+#         404: {'message': 'Block is not created'},
+#     },
+# )
+@app.post('/file/create')
 async def create(servers: list, filename: str):
     '''
     servers: list of ip addresses with corresponding port where to create the file
@@ -50,8 +51,8 @@ async def create(servers: list, filename: str):
 
         logger.error(f'Storage server didn\'t create the file: {filename}.')
         app.logger.debug('Storage server sent response with status code 404.')
-
-        return Response(status_code=404)
+        raise HTTPException(status_code=404, detail=f'File "{file.filename}" is not found in directory!')
+        # return Response(status_code=404)
     
     app.logger.debug(f'Storage server created file: {filename}.')
     app.logger.debug('Storage server is ready to forward request to other servers.')
@@ -62,7 +63,8 @@ async def create(servers: list, filename: str):
     app.logger.debug('Storage server finished with creation of the file.')
     app.logger.debug('Storage server sent response with status code 200.')
 
-    return Response(status_code=200)
+    # return Response(status_code=200)
+    return {'message': 'File is created!'}
 
 
 async def forward_create(servers: list, filename: str):
