@@ -24,6 +24,8 @@ def create_app() -> FastAPI:
 
 app = create_app()
 
+DATA_DIR = '/tmp/'
+
 @app.post('/file/create',
     summary='Create block',
     response_class=Response,
@@ -40,9 +42,11 @@ async def create(servers: list, filename: str):
     app.logger.debug(f'Storage server recieved servers list: {servers}.')
     app.logger.debug(f'Storage server has started creating file: {filename}.')
 
-    with open(filename, 'w'):
+    file_address = DATA_DIR + filename
+
+    with open(file_address, 'w'):
         pass
-    if not os.path.isfile(filename):
+    if not os.path.isfile(file_address):
 
         logger.error(f'Storage server didn\'t create the file: {filename}.')
         app.logger.debug('Storage server sent response with status code 404.')
@@ -88,10 +92,12 @@ async def put(servers: list, file: UploadFile = File(...)):
     app.logger.debug(f'Storage server recieved servers list: {servers}.')
     app.logger.debug(f'Storage server has started writing file: {file.filename}.')
 
-    with open(file.filename, 'wb') as buffer:
+    file_address = DATA_DIR + file.filename
+
+    with open(file_address, 'wb') as buffer:
         shutil.copyfileobj(file.file, buffer)
     
-    if not os.path.isfile(file.filename):
+    if not os.path.isfile(file_address):
         logger.error(f'Storage server didn\'t write the file: {file.filename}.')
         logger.error('Storage server raised an error with status code 400.')
         raise HTTPException(status_code=400, detail=f'File "{file.filename}" is not found in directory!')
@@ -140,11 +146,13 @@ async def get(filename: str):
     app.logger.debug(f'Storage server recieved filename: {filename}.')
     app.logger.debug(f'Storage server is searching for a file: {filename}.')
 
-    if not os.path.isfile(filename):
+    file_address = DATA_DIR + filename
+
+    if not os.path.isfile(file_address):
         logger.error(f'Storage server didn\'t find the file: {filename}.')
         logger.error('Storage server raised an error with status code 400.')
         raise HTTPException(status_code=400, detail=f'File "{filename}" does not exist in directory!')
-    with open(filename) as f:
+    with open(file_address) as f:
         app.logger.debug(f'Storage server has found the file: {filename}.')
         app.logger.debug(f'Storage server sending the file in response')
         return f.read() 
@@ -167,10 +175,13 @@ async def copy(servers: list, filename: str, newfilename: str):
     app.logger.debug(f'Storage server recieved servers list: {servers}.')
     app.logger.debug(f'Storage server is copying file named {filename} to file with name {newfilename}.')
 
-    with open(filename, 'rb') as f, open(newfilename) as copyfile:
+    file_address = DATA_DIR + filename
+    new_file_address = DATA_DIR + newfilename
+
+    with open(file_address, 'rb') as f, open(new_file_address) as copyfile:
         shutil.copyfileobj(f, copyfile)
 
-    if not os.path.isfile(newfilename):
+    if not os.path.isfile(new_file_address):
         logger.error(f'Storage server didn\'t copied the file :(')
         logger.error('Storage server raised an error with status code 400.')
         return Response(status_code=400)
@@ -219,15 +230,18 @@ async def delete(servers: list, filename: str):
     servers: list of ip addresses with corresponding port where to delete the file
     filename: name of file that client wants to delete
     '''
-    if not os.path.isfile(filename):
+
+    file_address = DATA_DIR + filename
+
+    if not os.path.isfile(file_address):
         logger.error(f'Storage server didn\'t find the file :(')
         logger.error('Storage server raised an error with status code 404.')
         return Response(status_code=404)
     else:
         app.logger.debug('Storage server is deleting the file.')
-        os.remove(filename)
+        os.remove(file_address)
     
-    if os.path.isfile(filename):
+    if os.path.isfile(file_address):
         logger.error('Storage server didn\'t delete the file.')
 
     app.logger.debug(f'Storage server deleted the file {filename}.')
