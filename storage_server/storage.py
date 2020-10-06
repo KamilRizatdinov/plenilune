@@ -229,7 +229,7 @@ async def forward_copy(servers: list, filename: str, newfilename: str):
         404: {'message': 'Block is not found'},
     },
 )
-async def delete(servers: list = Body(...), filename: str = Body(...)):
+async def delete(servers: List[str] = Body(...), filename: str = Body(...)):
     '''
     servers: list of ip addresses with corresponding port where to delete the file
     filename: name of file that client wants to delete
