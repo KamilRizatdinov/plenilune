@@ -16,7 +16,7 @@ async def client_status():
 @app.get("/init")
 async def client_init():
     dump_data()
-    return {"message": "Initialize request recieved!", "data": get_data()}
+    return {"detail": "File system initialized"}
 
 
 @app.get("/file/create")
