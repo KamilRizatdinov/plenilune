@@ -8,7 +8,6 @@ import requests
 import logging
 
 from custom_logging import CustomizeLogger
-from schemas import *
 
 app = FastAPI()
 
@@ -28,14 +27,7 @@ app = create_app()
 
 DATA_DIR = '/data/'
 
-# @app.post('/file/create',
-#     summary='Create block',
-#     response_class=Response,
-#     responses={
-#         200: {'message': 'Block is successfully created'},
-#         404: {'message': 'Block is not created'},
-#     },
-# )
+
 @app.post('/file/create')
 async def create(servers: List[str], filename: str):
     '''
