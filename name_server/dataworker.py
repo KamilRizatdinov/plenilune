@@ -129,6 +129,14 @@ def file_copy(filename: str, destination: str):
     return {"blocks": result}
 
 
+def file_move(filename: str, destination: str):
+    file_blocks = file_delete(filename)['blocks']
+    directory_open(destination)
+    create_file_entry(filename, file_blocks)
+    directory_open('..')
+    return {"detail": f"File '{filename}' moved to directory: {destination}"}
+
+
 def file_delete(filename: str):
     data = get_data()
     client_cursor = data['client_cursor']

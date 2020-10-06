@@ -49,6 +49,15 @@ async def client_file_copy(filename: str, destination: str):
     return file_copy(filename, destination)
 
 
+@app.get("/file/move")
+async def client_file_move(filename: str, destination: str):
+    if not check_file_existance(filename):
+        raise HTTPException(status_code=400, detail=f"File '{filename}' does not exist in that directory!")
+    if not check_directory_existance(destination):
+        raise HTTPException(status_code=400, detail=f"Directory '{dirname}' does not exist in that directory!")
+    return file_move(filename, destination)
+
+
 @app.get("/file/delete")
 async def client_file_delete(filename: str):
     if not check_file_existance(filename):
