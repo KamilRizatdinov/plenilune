@@ -220,7 +220,7 @@ async def forward_copy(servers: list, filename: str, newfilename: str):
     app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
 
 
-@app.get('/file/delete',
+@app.post('/file/delete',
     summary='Delete block',
     response_class=Response,
     responses={
