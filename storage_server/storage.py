@@ -36,7 +36,7 @@ DATA_DIR = '/data/'
 #         404: {'message': 'Block is not created'},
 #     },
 # )
-@app.get('/file/create')
+@app.post('/file/create')
 async def create(servers: List[str], filename: str):
     '''
     servers: list of ip addresses with corresponding port where to create the file
@@ -221,14 +221,7 @@ async def forward_copy(servers: list, filename: str, newfilename: str):
     app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
 
 
-@app.post('/file/delete',
-    summary='Delete block',
-    response_class=Response,
-    responses={
-        200: {'message': 'Block is successfully deleted'},
-        404: {'message': 'Block is not found'},
-    },
-)
+@app.post('/file/delete')
 async def delete(servers: List[str] = Body(...), filename: str = Body(...)):
     '''
     servers: list of ip addresses with corresponding port where to delete the file
