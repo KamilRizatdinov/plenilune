@@ -63,6 +63,21 @@ def delete(filename):
     if response.status_code != 200:
         print(response.json()["detail"])
         return
+    data = response.json()
+    blocks = data["blocks"]
+    print("Connecting to Data Servers...")
+    for block in blocks:
+        block_name = block["name"]
+        storage_server_addresses = block["addresses"]
+        response = requests.delete(
+            f'http://{storage_server_addresses[0]}/file/delete',
+            data={'servers': storage_server_addresses},
+            files={'filename': block_name}
+        )
+        if response.status_code != 200:
+            print("Something went wrong:", response.status_code, response.reason)
+            return
+        print(response.json())
     print("You have successfully deleted the file!")
 
 
@@ -90,12 +105,12 @@ def read(filename):
         return
     file = open(filename, "w+")
     blocks = data["blocks"]
-    block_size = data["block_size"]
     print("Connecting to Data Servers...")
     for block in blocks:
         block_name = block["block_name"]
         storage_server_addresses = block["addresses"]
-        response = requests.get(f'http://{storage_server_addresses[0]}/file/get')
+        response = requests.get(f'http://{storage_server_addresses[0]}/file/get',
+                                files={'filename': block_name})
         if response.status_code == 200:
             file.write(response.json())
         else:
@@ -226,6 +241,6 @@ if __name__ == "__main__":
         "ls": read_dir,         # works
         "rmdir": delete_dir,    # works
         "cd": open_dir,         # works
-        "mkdir": create_dir,     # works
-        "status": status
+        "mkdir": create_dir,    # works
+        "status": status        # works
     })
