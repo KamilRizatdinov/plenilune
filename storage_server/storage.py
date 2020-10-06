@@ -48,9 +48,16 @@ async def put(servers: list, file: UploadFile = File(...)):
     '''
     with open(file.filename, 'wb') as buffer:
         shutil.copyfileobj(file.file, buffer)
-    print(servers)
     if len(servers) > 1:
-        forward_put(servers, file)
+        # forward_put(servers, file)
+        server = servers[1]
+        servers = servers[1:]
+
+        files = {
+            'file': (file.filename, open(file.filename, 'rb')),
+        }
+
+        requests.post('http://' + server + '/file/put', data={'servers': servers}, files=files)
     return {'filename': file.filename, 'message': 'Data is recieved!'}
 
 
@@ -65,9 +72,8 @@ def forward_put(servers: list, file: UploadFile = File(...)):
     files = {
         'file': (file.filename, open(file.filename, 'rb')),
     }
-    print(f"Forvard put request to {server}")
+
     requests.post('http://' + server + '/file/put', data={'servers': servers}, files=files)
-    print(requests.json())
 
 
 # block_uuid was replaced by filename because of 
