@@ -28,6 +28,56 @@ app = create_app()
 DATA_DIR = '/data/'
 
 
+@app.post('/init')
+async def init(servers: List[str] = Body(...)):
+    '''
+    servers: list of ip addresses with corresponding port where to create the file
+    '''
+
+    app.logger.debug(f'Storage server recieved servers list: {servers}.')
+    app.logger.debug('Storage server has started init process.')
+
+    for filename in os.listdir(DATA_DIR):
+        file_path = os.path.join(DATA_DIR, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            logger.error(f'Storage server didn\'t failed to delete the file: {file_path}.')
+            app.logger.debug('Storage server sent response with status code 400.')
+            raise HTTPException(status_code=400, detail=f'{file_path} is failed to be deleted. Error: {e}')
+    
+    app.logger.debug('Storage server is ready to forward request to other servers.')
+
+    if len(servers) > 1:
+        await forward_init(servers)
+
+    app.logger.debug('Storage server finished with initialising.')
+    app.logger.debug('Storage server sent response with status code 200.')
+
+    return {'message': 'The server is initialised.'}
+
+
+async def forward_init(servers: List[str]):
+    '''
+    servers: list of ip addresses with corresponding port where to create the file
+    filename: name of file that client wants to create
+    '''
+    server = servers[1]
+    servers = servers[1:]
+
+    app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
+
+    response = requests.post('http://' + server + '/file/init', json={'servers': servers})
+
+    if response.status_code != 200:
+        logger.error(f'Something went wrong: {response.json()["detail"]}')
+    
+    app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
+
+
 @app.post('/file/create')
 async def create(servers: List[str] = Body(...), filename: str = Body(...)):
     '''
@@ -45,7 +95,7 @@ async def create(servers: List[str] = Body(...), filename: str = Body(...)):
 
         logger.error(f'Storage server didn\'t create the file: {filename}.')
         app.logger.debug('Storage server sent response with status code 404.')
-        raise HTTPException(status_code=404, detail=f'File "{file.filename}" is not found in directory!')
+        raise HTTPException(status_code=404, detail=f'File "{filename}" is not found in directory!')
         # return Response(status_code=404)
     
     app.logger.debug(f'Storage server created file: {filename}.')
