@@ -3,14 +3,14 @@ import os
 import requests
 import fire
 
-name_server_address = "127.0.0.1:80"
+name_server_address = "127.0.0.1:80" #"3.22.44.23:80"
 
 
 def write(filename: str):
     filesize = os.path.getsize(filename)
     response = requests.get(f'http://{name_server_address}/file/write', {"filename": filename, "filesize": filesize})
-
     data = response.json()
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
@@ -34,6 +34,7 @@ def write(filename: str):
             return
         
         print(response.json())
+    print(f"File uploaded: '{filename}'")
 
 
 def info(filename):
@@ -48,52 +49,46 @@ def info(filename):
 
 
 def delete(filename):
-    print("Delete", filename, "command received!")
-    params = {"filename": filename}
-    url = name_server_address + "/file/delete"
-    print("Connecting to Name Server...")
-    response = requests.get(f'http://{url}', params)
+    response = requests.get(f'http://{name_server_address}/file/delete', {"filename": filename})
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    print("You have successfully deleted the file!")
+    
+    print(response.json())
 
 
 def initialize():
-    print("Initialize command received!")
-    print("Connecting to Name Server...")
-    url = name_server_address + "/init"
-    response = requests.get(f'http://{url}')
+    response = requests.get(f'http://{name_server_address}/init')
+
     if response.status_code == 200:
-        print("You have successfully connect to the name server!")
+        print("File system initialized")
     else:
         print("Something went wrong:", response.status_code, response.reason)
 
 
 def read(filename):
-    print("Read", filename, "command received!")
-    filesize = os.path.getsize(filename)
-    params = {"filename": filename, "filesize": filesize}
-    url = name_server_address + "/file/read"
-    print("Connecting to Name Server...")
-    response = requests.get(f'http://{url}', params)
+    response = requests.get(f'http://{name_server_address}/file/read', {"filename": filename})
     data = response.json()
+
     if response.status_code != 200:
         print(response.json()["detail"])
         return
+    
     file = open(filename, "w+")
     blocks = data["blocks"]
     block_size = data["block_size"]
-    print("Connecting to Data Servers...")
+    
     for block in blocks:
         block_name = block["block_name"]
         storage_server_addresses = block["addresses"]
-        response = requests.get(f'http://{storage_server_addresses[0]}/file/get')
+        response = requests.get(f'http://{storage_server_addresses[0]}/file/get', {"filename": block_name})
+
         if response.status_code == 200:
             file.write(response.json())
         else:
-            print("Something went wrong:", response.json()["detail"])
-    print("You had successfully upload the file!")
+            print(response.json()["detail"])
+    print(f"File downloaded: '{filename}'")
 
 
 def create(filename):
