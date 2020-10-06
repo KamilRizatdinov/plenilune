@@ -29,7 +29,7 @@ DATA_DIR = '/data/'
 
 
 @app.post('/file/create')
-async def create(servers: List[str], filename: str):
+async def create(servers: List[str] = Body(...), filename: str = Body(...)):
     '''
     servers: list of ip addresses with corresponding port where to create the file
     filename: name of file that client wants to create
@@ -71,7 +71,7 @@ async def forward_create(servers: List[str], filename: str):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.get('http://' + server + '/file/create', {'servers': servers, 'filename': filename})
+    response = requests.get('http://' + server + '/file/create', json={'servers': servers, 'filename': filename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
