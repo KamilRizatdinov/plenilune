@@ -113,7 +113,7 @@ def file_read(filename: str):
     return {"filename": filename, "blocks": blocks, "block_size": get_data()["block_size"]}
 
 
-def file_copy(filename: str, copy: str):
+def file_copy(filename: str, destination: str):
     blocks = get_file_blocks(filename)
     result = []
     copy_blocks = []
@@ -124,7 +124,7 @@ def file_copy(filename: str, copy: str):
         copy_block["block_name"] = copy_block.pop("copy_name")
         copy_blocks.append(copy_block)
     
-    create_file_entry(copy, copy_blocks)
+    create_file_entry(destination, copy_blocks)
 
     return {"blocks": result}
 
