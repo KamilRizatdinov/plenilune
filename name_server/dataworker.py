@@ -181,9 +181,10 @@ def directory_open(dirname: str):
             return {"detail": f"Your current directory: {client_cursor}"}
 
 
-def directory_read():
+def directory_read(client_cursor: str = None):
     data = get_data()
-    client_cursor = data['client_cursor']
+    if client_cursor is None:
+        client_cursor = data['client_cursor']
     fsimage = data['fsimage']
     result = {}
     result['dirs'] = fsimage[client_cursor]['dirs']
@@ -191,10 +192,22 @@ def directory_read():
     return result
 
 
-def directory_delete(dirname: str):
+def directory_delete(dirname: str, flag: str):
     data = get_data()
     client_cursor = data['client_cursor']
     fsimage = data['fsimage']
 
-    return result
+    if flag == "y":
+        fsimage[client_cursor]['dirs'].remove(dirname)
+        fsimage.pop(f'{client_cursor}/{dirname}')
+        update_data('fsimage', fsimage) 
+    else:
+        if directory_read(f'{client_cursor}/{dirname}')['dirs'] == [] and directory_read(f'{client_cursor}/{dirname}')['files'] == []:
+            fsimage[client_cursor]['dirs'].remove(dirname)
+            fsimage.pop(f'{client_cursor}/{dirname}')
+            update_data('fsimage', fsimage) 
+        else:
+            return None
+
+    return {"detail": f"Directory deleted: '{dirname}'"}
 
