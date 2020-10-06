@@ -178,7 +178,7 @@ async def copy(servers: list, filename: str, newfilename: str):
     file_address = DATA_DIR + filename
     new_file_address = DATA_DIR + newfilename
 
-    with open(file_address, 'rb') as f, open(new_file_address) as copyfile:
+    with open(file_address, 'rb') as f, open(new_file_address, 'wb') as copyfile:
         shutil.copyfileobj(f, copyfile)
 
     if not os.path.isfile(new_file_address):
