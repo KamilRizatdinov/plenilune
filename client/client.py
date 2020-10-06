@@ -201,6 +201,18 @@ def read_dir():
     print(data)
 
 
+def status():
+    print("Status command received!")
+    url = name_server_address + "/status"
+    print("Connecting to Name Server...")
+    response = requests.get(url)
+    if response.status_code != 200:
+        print(response.json()["detail"])
+        return
+    data = response.json()
+    print(data)
+
+
 if __name__ == "__main__":
     fire.Fire({
         "get": read,
@@ -210,9 +222,10 @@ if __name__ == "__main__":
         "info": info,           # works
         "copy": copy,
         "create": create,
-        "move": move,
+        "move": move,           # works
         "ls": read_dir,         # works
         "rmdir": delete_dir,    # works
         "cd": open_dir,         # works
-        "mkdir": create_dir     # works
+        "mkdir": create_dir,     # works
+        "status": status
     })
