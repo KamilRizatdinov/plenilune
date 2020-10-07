@@ -7,7 +7,6 @@ import shutil
 import requests
 import logging
 import socket
-
 from custom_logging import CustomizeLogger
 
 app = FastAPI()
@@ -29,7 +28,7 @@ app = create_app()
 DATA_DIR = '/data/'
 PORT = 8000
 
-@app.post('/init')
+@app.post('/init', summary='Initialize the server')
 async def init(servers: List[str] = Body(...)):
     '''
     servers: list of ip addresses with corresponding port where to create the file
@@ -79,7 +78,7 @@ async def forward_init(servers: List[str]):
     app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
 
 
-@app.get('/storage/info')
+@app.get('/storage/info', summary='Information about storage server')
 async def info():
     app.logger.debug('Storage server is prepairing the info.')
     app.logger.debug('Storage server is extracting an ip.')
@@ -95,7 +94,7 @@ async def info():
     return {'hostname' : host_ip, 'blocks': blocks}
 
 
-@app.post('/file/create')
+@app.post('/file/create', summary='Create file')
 async def create(servers: List[str] = Body(...), filename: str = Body(...)):
     '''
     servers: list of ip addresses with corresponding port where to create the file
@@ -146,7 +145,7 @@ async def forward_create(servers: List[str], filename: str):
     app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
 
 
-@app.post('/file/put')
+@app.post('/file/put', summary='Write a file')
 async def put(servers: list, file: UploadFile = File(...)):
     '''
     servers: list of ip addresses with corresponding port where to replicate the file
@@ -201,7 +200,7 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
 
 # block_uuid was replaced by filename because of 
 # using this notation in function put
-@app.get('/file/get')
+@app.get('/file/get', summary='Read a file')
 async def get(filename: str):
     '''
     filename: name of file that client wants to get
@@ -221,7 +220,7 @@ async def get(filename: str):
         return f.read() 
 
 
-@app.post('/file/copy')
+@app.post('/file/copy', summary='Copy a file')
 async def copy(servers: List[str] = Body(...), filename: str = Body(...), newfilename: str = Body(...)):
     '''
     servers: list of ip addresses with corresponding port where file need to be copied
@@ -273,7 +272,7 @@ async def forward_copy(servers: List[str], filename: str, newfilename: str):
     app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
 
 
-@app.post('/file/delete')
+@app.post('/file/delete', summary='Delete a file')
 async def delete(servers: List[str] = Body(...), filename: str = Body(...)):
     '''
     servers: list of ip addresses with corresponding port where to delete the file
