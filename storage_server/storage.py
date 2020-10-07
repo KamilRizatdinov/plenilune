@@ -81,17 +81,25 @@ async def forward_init(servers: List[str]):
 @app.get('/storage/info', summary='Information about storage server')
 async def info():
     app.logger.debug('Storage server is prepairing the info.')
-    app.logger.debug('Storage server is extracting an ip.')
+    app.logger.debug('Storage server is extracting an ip of docker.')
     try: 
-        host_name = socket.gethostname() 
-        host_ip = socket.gethostbyname(host_name)
-        host_ip = f'{host_ip}:{PORT}'
+        docker_name = socket.gethostname() 
+        docker_ip = socket.gethostbyname(docker_name)
+        docker_ip = f'{docker_ip}:{PORT}'
     except: 
-        raise HTTPException(status_code=400, detail='Unable to get IP of host')
+        raise HTTPException(status_code=400, detail='Unable to get IP of docker')
+    
+    app.logger.debug('Storage server is extracting an ip of host machine.')
+    response = requests.get('https://api.ipify.org')
+    if response.status_code != 200:
+        logger.error(f'Something went wrong: {response.json()["detail"]}')
+    
+    public_ip = f'{response.content.decode("utf-8")}:{PORT}'
+
     app.logger.debug('Storage server is prepairing the info about block names.')
     blocks = [str(f) for f in os.listdir(DATA_DIR)]
     app.logger.debug('Storage server is sending the info.')
-    return {'hostname' : host_ip, 'blocks': blocks, 'ip': requests.get('https://api.ipify.org').content}
+    return {'hostname': public_ip, 'dockername' : docker_ip, 'blocks': blocks}
 
 
 @app.post('/file/create', summary='Create file')
