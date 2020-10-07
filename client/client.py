@@ -7,6 +7,10 @@ name_server_address = "3.22.44.23:80"
 
 
 def write(filename: str):
+    """
+    Uploads a file to the DFS
+    :param filename: a name of file to upload
+    """
     filesize = os.path.getsize(filename)
     response = requests.get(f'http://{name_server_address}/file/write',
                             {"filename": filename, "filesize": filesize})
@@ -39,6 +43,10 @@ def write(filename: str):
 
 
 def info(filename):
+    """
+    Provides information about the file
+    :param filename: a name of file to get information about
+    """
     response = requests.get(f'http://{name_server_address}/file/info',
                             {"filename": filename})
 
@@ -51,6 +59,10 @@ def info(filename):
 
 
 def delete(filename):
+    """
+    Deletes a file from DFS
+    :param filename: a name of file to delete
+    """
     response = requests.get(f'http://{name_server_address}/file/delete',
                             {"filename": filename})
 
@@ -77,8 +89,13 @@ def delete(filename):
     print(f'File deleted: {filename}')
 
 
-def initialize():
-    response = requests.get(f'http://{name_server_address}/init')
+def initialize(block_size=1024):
+    '''
+    Initializes the client storage on a new system, removes any existing file in the dfs root directory
+    :param block_size: a size of data blocks in storage servers, by default is 1024
+    '''
+    response = requests.get(f'http://{name_server_address}/init',
+                            {"blocksize": block_size})
     storage_server_addresses = response.json()
     response = requests.post(
             f'http://{storage_server_addresses[0]}/init',
@@ -88,6 +105,10 @@ def initialize():
 
 
 def read(filename):
+    '''
+    Downloads a file from the DFS
+    :param filename: a name of file to download
+    '''
     response = requests.get(f'http://{name_server_address}/file/read',
                             {"filename": filename})
     data = response.json()
@@ -114,6 +135,10 @@ def read(filename):
 
 
 def create(filename):
+    '''
+    Creates a new empty file
+    :param filename: a name of file to create
+    '''
     response = requests.get(f'http://{name_server_address}/file/create',
                             {"filename": filename})
     data = response.json()
@@ -134,6 +159,11 @@ def create(filename):
 
 
 def copy(filename, destination):
+    """
+    Creates a copy of file in the destination directory
+    :param filename: a name of file to copy
+    :param destination: directory to allocate copy of file
+    """
     response = requests.get(f'http://{name_server_address}/file/copy',
                             {"filename": filename, "destination": destination})
     data = response.json()
@@ -155,6 +185,11 @@ def copy(filename, destination):
 
 
 def move(filename, destination):
+    """
+    Moves a file to the destination path
+    :param filename: a name of file to move
+    :param destination: a directory where allocate the file
+    """
     response = requests.get(f'http://{name_server_address}/file/move',
                             {"filename": filename, "destination": destination})
 
@@ -166,6 +201,10 @@ def move(filename, destination):
 
 
 def create_dir(dirname):
+    """
+    Creates a new directory
+    :param dirname: a name of directory to create
+    """
     response = requests.get(f'http://{name_server_address}/dir/create',
                             {"dirname": dirname})
 
@@ -177,6 +216,10 @@ def create_dir(dirname):
 
 
 def open_dir(dirname):
+    """
+    Opens a directory
+    :param dirname: a name of directory to open
+    """
     response = requests.get(f'http://{name_server_address}/dir/open',
                             {"dirname": dirname})
 
@@ -188,6 +231,11 @@ def open_dir(dirname):
 
 
 def delete_dir(dirname, flag=None):
+    """
+    Deletes a directory
+    :param dirname: a name or directory to delete
+    :param flag: y if you want to delete directory with data inside it
+    """
     response = requests.get(f'http://{name_server_address}/dir/delete',
                             {"dirname": dirname, "flag": flag})
 
@@ -199,6 +247,9 @@ def delete_dir(dirname, flag=None):
 
 
 def read_dir():
+    """
+    Returns list of files, which are stored in the current directory
+    """
     response = requests.get(f'http://{name_server_address}/dir/read')
 
     if response.status_code != 200:
@@ -209,6 +260,9 @@ def read_dir():
 
 
 def status():
+    """
+    Returns client status
+    """
     response = requests.get(f'http://{name_server_address}/status')
 
     if response.status_code != 200:
@@ -220,17 +274,17 @@ def status():
 
 if __name__ == "__main__":
     fire.Fire({
+        "init": initialize,
+        "create": create,
         "get": read,
         "put": write,
-        "rm": delete,           # works
-        "init": initialize,     # works
-        "info": info,           # works
+        "rm": delete,
+        "info": info,
         "copy": copy,
-        "create": create,
-        "move": move,           # works
-        "ls": read_dir,         # works
-        "rmdir": delete_dir,    # works
-        "cd": open_dir,         # works
-        "mkdir": create_dir,    # works
-        "status": status        # works
+        "move": move,
+        "cd": open_dir,
+        "ls": read_dir,
+        "mkdir": create_dir,
+        "rmdir": delete_dir,
+        "status": status
     })
