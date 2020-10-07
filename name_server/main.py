@@ -126,6 +126,7 @@ async def on_startup():
 async def poll_storage_servers():
     while True:
         app.logger.debug("Polling storage servers")
+        storage_servers, storage_servers_num = get_storage_servers_hostnames()
         await asyncio.sleep(5)
 
 
