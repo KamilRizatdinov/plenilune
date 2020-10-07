@@ -94,7 +94,7 @@ async def forward_init(servers: List[str]):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.post('http://' + server + '/file/init', json={'servers': servers})
+    response = requests.post(f'http://{server}/file/init', json={'servers': servers})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
@@ -162,7 +162,7 @@ async def forward_create(servers: List[str], filename: str):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.post('http://' + server + '/file/create', json={'servers': servers, 'filename': filename})
+    response = requests.post(f'http://{server}/file/create', json={'servers': servers, 'filename': filename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
@@ -215,7 +215,7 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
         'file': (file.filename, file.file),
     }
 
-    response = requests.post('http://' + server + '/file/put', data={'servers': servers}, files=files)
+    response = requests.post(f'http://{server}/file/put', data={'servers': servers}, files=files)
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
@@ -289,7 +289,7 @@ async def forward_copy(servers: List[str], filename: str, newfilename: str):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.post('http://' + server + '/file/copy', json={'servers': servers, 'filename': filename, 'newfilename': newfilename})
+    response = requests.post(f'http://{server}/file/copy', json={'servers': servers, 'filename': filename, 'newfilename': newfilename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')
@@ -338,7 +338,7 @@ async def forward_delete(servers: List[str], filename: str):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.post('http://' + server + '/file/delete', json={'servers': servers, 'filename': filename})
+    response = requests.post(f'http://{server}/file/delete', json={'servers': servers, 'filename': filename})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.status_code}')
