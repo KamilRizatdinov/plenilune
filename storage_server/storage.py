@@ -40,7 +40,7 @@ async def startup_event():
     global IP
     IP = f'{response.content.decode("utf-8")}:{PORT}'
 
-    initial_info = info()
+    initial_info = await info()
     app.logger.debug(f'Storage server sends info about itself on start up to: {NAME_SERVER_IP}.')
     
     response = requests.post(
