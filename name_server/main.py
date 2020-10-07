@@ -1,4 +1,6 @@
+import asyncio
 from pathlib import Path
+import time
 import uuid
 
 from fastapi import FastAPI, HTTPException
@@ -116,10 +118,15 @@ async def client_directory_delete(dirname: str, flag: str = None):
     return result
 
 
-# Storage side API
-@app.get("/update")
-async def storage_update():
-    return {"message": "Update request recieved!"}
+@app.on_event("startup")
+async def on_startup():
+    asyncio.create_task(poll_storage_servers())
+
+
+async def poll_storage_servers():
+    while True:
+        app.logger.debug("Polling storage servers")
+        await asyncio.sleep(5)
 
 
 if __name__ == '__main__':
