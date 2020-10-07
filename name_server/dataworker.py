@@ -9,6 +9,7 @@ conn = redis.Redis('redis')
 
 
 def dump_data():
+    storage_servers = get_data()['storage_servers']
     set_data({
         "block_size": 1024,
         "replication": 1000,
@@ -18,7 +19,7 @@ def dump_data():
                 "files": {}
             }
         },
-        "storage_servers": [],
+        "storage_servers": storage_servers,
         "client_cursor": "."
         }
     )
