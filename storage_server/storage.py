@@ -27,6 +27,21 @@ app = create_app()
 
 DATA_DIR = '/data/'
 PORT = 8000
+NAME_SERVER_IP = '3.22.44.23:80'
+
+@app.on_event("startup")
+async def startup_event():
+    initial_info = info()
+    app.logger.debug(f'Storage server sends info about itself on start up to: {NAME_SERVER_IP}.')
+    
+    response = requests.post(
+            f'http://{NAME_SERVER_IP}/storage/register',
+            json=initial_info
+        )
+    
+    if response.status_code != 200:
+        logger.error(f'Something went wrong: {response.json()["detail"]}')
+
 
 @app.post('/init', summary='Initialize the server')
 async def init(servers: List[str] = Body(...)):
