@@ -23,16 +23,19 @@ def dump_data():
                 "id": 1,
                 "hostname": "52.14.131.8:8000",
                 "status": "UP",
+                "block": [],
             },
             {
                 "id": 2,
                 "hostname": "3.22.86.155:8000",
                 "status": "UP",
+                "blocks": [],
             },
             {
                 "id": 3,
                 "hostname": "18.225.27.144:8000",
                 "status": "UP",
+                "blocks": [],
             },
         ],
         "client_cursor": "."
