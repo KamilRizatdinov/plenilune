@@ -6,6 +6,7 @@ import os
 import shutil
 import requests
 import logging
+import socket
 
 from custom_logging import CustomizeLogger
 
@@ -76,6 +77,21 @@ async def forward_init(servers: List[str]):
         logger.error(f'Something went wrong: {response.json()["detail"]}')
     
     app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
+
+
+@app.post('/storage/info')
+async def info():
+    app.logger.debug('Storage server is prepairing the info.')
+    app.logger.debug('Storage server is extracting an ip.')
+    try: 
+        host_name = socket.gethostname() 
+        host_ip = str(socket.gethostbyname(host_name))
+    except: 
+        raise HTTPException(status_code=400, detail='Unable to get IP of host')
+    app.logger.debug('Storage server is prepairing the info about block names.')
+    blocks = [str(f) for f in os.listdir(DATA_DIR)]
+    app.logger.debug('Storage server is sending the info.')
+    return {'hostname' : host_ip, 'blocks': blocks}
 
 
 @app.post('/file/create')
