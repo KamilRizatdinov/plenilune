@@ -11,33 +11,14 @@ conn = redis.Redis('redis')
 def dump_data():
     set_data({
         "block_size": 1024,
-        "replication": 2,
+        "replication": 1000,
         "fsimage": {
             ".": {
                 "dirs": [],
                 "files": {}
             }
         },
-        "storage_servers": [
-            {
-                "id": 1,
-                "hostname": "52.14.131.8:8000",
-                "status": "UP",
-                "block": [],
-            },
-            {
-                "id": 2,
-                "hostname": "3.22.86.155:8000",
-                "status": "UP",
-                "blocks": [],
-            },
-            {
-                "id": 3,
-                "hostname": "18.225.27.144:8000",
-                "status": "UP",
-                "blocks": [],
-            },
-        ],
+        "storage_servers": [],
         "client_cursor": "."
         }
     )
@@ -69,7 +50,18 @@ def get_active_storage_servers_hostnames():
     return (result, len(result))
 
 
-def get_block_num(filesize):
+def register_storage_server(hostname: str, dockername: str, blocks: list):
+    storage_servers = get_data()["storage_servers"]
+    storage_servers_hostnames = [storage_server["hostname"] for storage_server in storage_servers]
+
+    if not hostname in storage_servers_hostnames:
+        storage_servers.append({"hostname": hostname, "dockername": dockername, "status": "UP", "blocks": blocks})
+        update_data("storage_servers", storage_servers)
+    
+    return {"hostname": hostname, "dockername": dockername, "status": "UP", "blocks": blocks}
+
+
+def get_block_num(filesize: int):
     block_size = get_data()['block_size']
     if filesize % block_size == 0:
         return filesize // block_size

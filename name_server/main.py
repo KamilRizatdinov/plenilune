@@ -1,10 +1,13 @@
 import asyncio
 from pathlib import Path
 import time
+from typing import List
 import uuid
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Body
 import logging
+import requests
+from requests.exceptions import ConnectionError
 import uvicorn
 
 from custom_logging import CustomizeLogger
@@ -118,6 +121,11 @@ async def client_directory_delete(dirname: str, flag: str = None):
     return result
 
 
+@app.post("/storage/register")
+async def storege_register(hostname: str = Body(...), dockername: str = Body(...), blocks: List[str] = Body(...)):
+    return register_storage_server(hostname, dockername, blocks)
+
+
 @app.on_event("startup")
 async def on_startup():
     asyncio.create_task(poll_storage_servers())
@@ -126,7 +134,22 @@ async def on_startup():
 async def poll_storage_servers():
     while True:
         app.logger.debug("Polling storage servers")
-        storage_servers, storage_servers_num = get_storage_servers_hostnames()
+        storage_servers = get_data()["storage_servers"]
+
+        for storage_server in storage_servers:
+            try:
+                response = requests.get(f"http://{storage_server['hostname']}/storage/info")
+                data = response.json()
+
+                storage_server["blocks"] = data["blocks"]    
+                storage_server["status"] = "UP"     
+                app.logger.error(f"Storage server is UP: {storage_server['hostname']}")       
+            except ConnectionError as e:
+                storage_server["status"] = "DOWN"
+                app.logger.error(f"Storage server is DOWN: {storage_server['hostname']}")
+            await asyncio.sleep(0)
+        
+        update_data("storage_servers", storage_servers)
         await asyncio.sleep(5)
 
 
