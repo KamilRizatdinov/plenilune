@@ -27,7 +27,7 @@ def create_app() -> FastAPI:
 app = create_app()
 
 DATA_DIR = '/data/'
-
+PORT = 8000
 
 @app.post('/init')
 async def init(servers: List[str] = Body(...)):
@@ -79,13 +79,14 @@ async def forward_init(servers: List[str]):
     app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
 
 
-@app.post('/storage/info')
+@app.get('/storage/info')
 async def info():
     app.logger.debug('Storage server is prepairing the info.')
     app.logger.debug('Storage server is extracting an ip.')
     try: 
         host_name = socket.gethostname() 
-        host_ip = str(socket.gethostbyname(host_name))
+        host_ip = socket.gethostbyname(host_name)
+        host_ip = f'{host_ip}:{PORT}'
     except: 
         raise HTTPException(status_code=400, detail='Unable to get IP of host')
     app.logger.debug('Storage server is prepairing the info about block names.')
@@ -111,7 +112,7 @@ async def create(servers: List[str] = Body(...), filename: str = Body(...)):
 
         logger.error(f'Storage server didn\'t create the file: {filename}.')
         app.logger.debug('Storage server sent response with status code 404.')
-        raise HTTPException(status_code=404, detail=f'File "{filename}" is not found in directory!')
+        raise HTTPException(status_code=404, detail=f'File {filename} is not found in directory!')
         # return Response(status_code=404)
     
     app.logger.debug(f'Storage server created file: {filename}.')
@@ -162,7 +163,7 @@ async def put(servers: list, file: UploadFile = File(...)):
     if not os.path.isfile(file_address):
         logger.error(f'Storage server didn\'t write the file: {file.filename}.')
         logger.error('Storage server raised an error with status code 400.')
-        raise HTTPException(status_code=400, detail=f'File "{file.filename}" is not found in directory!')
+        raise HTTPException(status_code=400, detail=f'File {file.filename} is not found in directory!')
         
     app.logger.debug(f'Storage server wrote file: {file.filename}.')
     app.logger.debug('Storage server is ready to forward request to other servers.')
@@ -213,7 +214,7 @@ async def get(filename: str):
     if not os.path.isfile(file_address):
         logger.error(f'Storage server didn\'t find the file: {filename}.')
         logger.error('Storage server raised an error with status code 400.')
-        raise HTTPException(status_code=400, detail=f'File "{filename}" does not exist in directory!')
+        raise HTTPException(status_code=400, detail=f'File {filename} does not exist in directory!')
     with open(file_address) as f:
         app.logger.debug(f'Storage server has found the file: {filename}.')
         app.logger.debug(f'Storage server sending the file in response')
@@ -322,5 +323,5 @@ async def forward_delete(servers: List[str], filename: str):
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+    uvicorn.run(app, host='0.0.0.0', port=PORT)
 
