@@ -28,9 +28,18 @@ app = create_app()
 DATA_DIR = '/data/'
 PORT = 8000
 NAME_SERVER_IP = '3.22.44.23:80'
+IP = ''
 
 @app.on_event("startup")
 async def startup_event():
+    app.logger.debug('Storage server is extracting an ip of host machine.')
+    response = requests.get('https://api.ipify.org')
+    if response.status_code != 200:
+        logger.error(f'Something went wrong: {response.json()["detail"]}')
+    
+    global IP
+    IP = f'{response.content.decode("utf-8")}:{PORT}'
+
     initial_info = info()
     app.logger.debug(f'Storage server sends info about itself on start up to: {NAME_SERVER_IP}.')
     
@@ -103,18 +112,11 @@ async def info():
         docker_ip = f'{docker_ip}:{PORT}'
     except: 
         raise HTTPException(status_code=400, detail='Unable to get IP of docker')
-    
-    app.logger.debug('Storage server is extracting an ip of host machine.')
-    response = requests.get('https://api.ipify.org')
-    if response.status_code != 200:
-        logger.error(f'Something went wrong: {response.json()["detail"]}')
-    
-    public_ip = f'{response.content.decode("utf-8")}:{PORT}'
 
     app.logger.debug('Storage server is prepairing the info about block names.')
     blocks = [str(f) for f in os.listdir(DATA_DIR)]
     app.logger.debug('Storage server is sending the info.')
-    return {'hostname': public_ip, 'dockername' : docker_ip, 'blocks': blocks}
+    return {'hostname': IP, 'dockername' : docker_ip, 'blocks': blocks}
 
 
 @app.post('/file/create', summary='Create file')
