@@ -1,6 +1,7 @@
 :information_source: This file can be deleted or reformated after the work is done
 
 ### How to launch storage server:
+You can easily run the storage server using [this bash script](https://pastebin.com/LydXNbBS), otherwise follow commands below.
 #### Prerequisites:
 * docker engine (follow instructions from [here](https://docs.docker.com/get-docker/))
 * docker compose (follow instructions from [here](https://docs.docker.com/compose/install/))
