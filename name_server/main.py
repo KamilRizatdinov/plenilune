@@ -32,8 +32,8 @@ async def client_status():
 
 
 @app.get("/init")
-async def client_init():
-    return init()
+async def client_init(block_size: int = 1024):
+    return init(block_size)
 
 
 @app.get("/file/create")
