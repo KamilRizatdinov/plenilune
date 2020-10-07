@@ -21,17 +21,17 @@ def dump_data():
         "storage_servers": [
             {
                 "id": 1,
-                "hostname": "localhost1",
+                "hostname": "52.14.131.8:8000",
                 "status": "UP",
             },
             {
                 "id": 2,
-                "hostname": "localhost2",
+                "hostname": "3.22.86.155:8000",
                 "status": "UP",
             },
             {
                 "id": 3,
-                "hostname": "localhost3",
+                "hostname": "18.225.27.144:8000",
                 "status": "UP",
             },
         ],
