@@ -91,7 +91,7 @@ async def info():
     app.logger.debug('Storage server is prepairing the info about block names.')
     blocks = [str(f) for f in os.listdir(DATA_DIR)]
     app.logger.debug('Storage server is sending the info.')
-    return {'hostname' : host_ip, 'blocks': blocks}
+    return {'hostname' : host_ip, 'blocks': blocks, 'ip': requests.get('https://api.ipify.org').content}
 
 
 @app.post('/file/create', summary='Create file')
