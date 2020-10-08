@@ -119,6 +119,26 @@ async def info():
     return {'hostname': IP, 'dockername' : docker_ip, 'blocks': blocks}
 
 
+@app.get('/storage/replicate', summary='Replicate block to another storage server')
+async def replicate(server: str = Body(...), filename: str = Body(...)):
+    file_address = DATA_DIR + filename
+
+    if not os.path.isfile(file_address):
+        logger.error(f'Storage server didn\'t find the file: {filename}.')
+        logger.error('Storage server raised an error with status code 400.')
+        raise HTTPException(status_code=400, detail=f'File {filename} does not exist in directory!')
+    else:
+        files = {
+            'file': (filename, open(file_address, 'rb')),
+        }
+        response = requests.post(f'http://{server}/file/put', data={'servers': [server]}, files=files)
+
+        if response.status_code != 200:
+        logger.error(f'Something went wrong: {response.json()["detail"]}')
+        
+    return {'hostname': IP, 'dockername' : docker_ip, 'blocks': blocks}
+
+
 @app.post('/file/create', summary='Create file')
 async def create(servers: List[str] = Body(...), filename: str = Body(...)):
     '''
