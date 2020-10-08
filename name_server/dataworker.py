@@ -85,7 +85,7 @@ def register_storage_server(hostname: str, dockername: str, blocks: list):
     
     for block in blocks_to_replicate:
         requests.post(
-            f'http://{get_random_active_storage_server()}/file/replicate',
+            f'http://{get_random_active_storage_server()["hostname"]}/file/replicate',
             json={'server': hostname, 'filename': block}
         )
 
