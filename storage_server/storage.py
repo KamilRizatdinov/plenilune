@@ -94,7 +94,7 @@ async def forward_init(servers: List[str]):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    response = requests.post(f'http://{server}/file/init', json={'servers': servers})
+    response = requests.post(f'http://{server}/init', json={'servers': servers})
 
     if response.status_code != 200:
         logger.error(f'Something went wrong: {response.json()["detail"]}')

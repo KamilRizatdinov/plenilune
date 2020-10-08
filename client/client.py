@@ -96,11 +96,13 @@ def initialize(block_size=1024):
     '''
     response = requests.get(f'http://{name_server_address}/init',
                             {"blocksize": block_size})
+                            
     data = response.json()
+    storage_server_addresses = data["servers"]
     
     response = requests.post(
             f'http://{storage_server_addresses[0]}/init',
-            json={'servers': data["servers"]}
+            json={'servers': storage_server_addresses}
     )
     print('System initialized')
 
