@@ -131,7 +131,7 @@ async def replicate(server: str = Body(...), filename: str = Body(...)):
         files = {
             'file': (filename, open(file_address, 'rb')),
         }
-        response = requests.post(f'http://{server}/file/put', data={'servers': [server]}, files=files)
+        response = requests.post(f'http://{server}/file/put', {'servers': [server]}, files=files)
 
         if response.status_code != 200:
             logger.error(f'Something went wrong: {response.json()["detail"]}')
