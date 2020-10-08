@@ -119,7 +119,7 @@ async def info():
     return {'hostname': IP, 'dockername' : docker_ip, 'blocks': blocks}
 
 
-@app.get('/storage/replicate', summary='Replicate block to another storage server')
+@app.post('/storage/replicate', summary='Replicate block to another storage server')
 async def replicate(server: str = Body(...), filename: str = Body(...)):
     file_address = DATA_DIR + filename
 
