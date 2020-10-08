@@ -21,12 +21,12 @@ def write(filename: str):
         return
     
     blocks = data["blocks"]
+    storage_server_addresses = data["addresses"]
     size = data['block_size']
     file = open(filename, 'rb')
 
     for block in blocks:
         block_name = block["block_name"]
-        storage_server_addresses = block["addresses"]
 
         response = requests.post(
             f'http://{storage_server_addresses[0]}/file/put',
@@ -72,10 +72,10 @@ def delete(filename):
 
     data = response.json()
     blocks = data["blocks"]
+    storage_server_addresses = data["addresses"]
 
     for block in blocks:
         block_name = block["block_name"]
-        storage_server_addresses = block["addresses"]
         response = requests.post(
             f'http://{storage_server_addresses[0]}/file/delete',
             json={'servers': storage_server_addresses, 'filename': block_name}
@@ -119,10 +119,10 @@ def read(filename):
     
     file = open(filename, "w+")
     blocks = data["blocks"]
+    storage_server_addresses = data["addresses"]
     
     for block in blocks:
         block_name = block["block_name"]
-        storage_server_addresses = block["addresses"]
         response = requests.get(f'http://{storage_server_addresses[0]}/file/get',
                                 {"filename": block_name})
 
@@ -148,8 +148,9 @@ def create(filename):
         return
     
     blocks = data["blocks"]
+    storage_server_addresses = data["addresses"]
+
     for block in blocks:
-        storage_server_addresses = block["addresses"]
         response = requests.post(f'http://{storage_server_addresses[0]}/file/create',
                                 json={"servers": storage_server_addresses, "filename": block["block_name"]})
         if response.status_code != 200:
@@ -173,8 +174,9 @@ def copy(filename, destination):
         return
 
     blocks = data["blocks"]
+    storage_server_addresses = data["addresses"]
+
     for block in blocks:
-        storage_server_addresses = block["addresses"]
         response = requests.post(f'http://{storage_server_addresses[0]}/file/copy',
                                 json={"servers": storage_server_addresses, "filename": block["block_name"], "newfilename": block["copy_name"]})
 
