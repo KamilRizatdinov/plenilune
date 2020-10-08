@@ -55,7 +55,7 @@ async def startup_event():
 @app.post('/init', summary='Initialize the server')
 async def init(servers: List[str] = Body(...)):
     '''
-    servers: list of ip addresses with corresponding port where to create the file
+    - **servers**: list of ip addresses with corresponding port where to create the file
     '''
 
     app.logger.debug(f'Storage server recieved servers list: {servers}.')
@@ -86,8 +86,8 @@ async def init(servers: List[str] = Body(...)):
 
 async def forward_init(servers: List[str]):
     '''
-    servers: list of ip addresses with corresponding port where to create the file
-    filename: name of file that client wants to create
+    - **servers**: list of ip addresses with corresponding port where to create the file
+    - **filename**: name of file that client wants to create
     '''
     server = servers[1]
     servers = servers[1:]
@@ -122,8 +122,8 @@ async def info():
 @app.post('/file/create', summary='Create file')
 async def create(servers: List[str] = Body(...), filename: str = Body(...)):
     '''
-    servers: list of ip addresses with corresponding port where to create the file
-    filename: name of file that client wants to create
+    - **servers**: list of ip addresses with corresponding port where to create the file
+    - **filename**: name of file that client wants to create
     '''
     app.logger.debug(f'Storage server recieved servers list: {servers}.')
     app.logger.debug(f'Storage server has started creating file: {filename}.')
@@ -154,8 +154,8 @@ async def create(servers: List[str] = Body(...), filename: str = Body(...)):
 
 async def forward_create(servers: List[str], filename: str):
     '''
-    servers: list of ip addresses with corresponding port where to create the file
-    filename: name of file that client wants to create
+    - **servers**: list of ip addresses with corresponding port where to create the file
+    - **filename**: name of file that client wants to create
     '''
     server = servers[1]
     servers = servers[1:]
@@ -173,8 +173,8 @@ async def forward_create(servers: List[str], filename: str):
 @app.post('/file/put', summary='Write a file')
 async def put(servers: list, file: UploadFile = File(...)):
     '''
-    servers: list of ip addresses with corresponding port where to replicate the file
-    file: file itself to upload, it's name I suppose in format of str
+    - **servers**: list of ip addresses with corresponding port where to replicate the file
+    - **file**: file itself to upload, it's name I suppose in format of str
     '''
     app.logger.debug(f'Storage server recieved servers list: {servers}.')
     app.logger.debug(f'Storage server has started writing file: {file.filename}.')
@@ -203,8 +203,8 @@ async def put(servers: list, file: UploadFile = File(...)):
 
 async def forward_put(servers: list, file: UploadFile = File(...)):
     '''
-    servers: list of ip addresses with corresponding port where to replicate the file
-    file: file itself to upload, it's name I suppose in format of str
+    - **servers**: list of ip addresses with corresponding port where to replicate the file
+    - **file**: file itself to upload, it's name I suppose in format of str
     '''
     server = servers[1]
     servers = servers[1:]
@@ -228,7 +228,7 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
 @app.get('/file/get', summary='Read a file')
 async def get(filename: str):
     '''
-    filename: name of file that client wants to get
+    - **filename**: name of file that client wants to get
     '''
     app.logger.debug(f'Storage server recieved filename: {filename}.')
     app.logger.debug(f'Storage server is searching for a file: {filename}.')
@@ -248,9 +248,9 @@ async def get(filename: str):
 @app.post('/file/copy', summary='Copy a file')
 async def copy(servers: List[str] = Body(...), filename: str = Body(...), newfilename: str = Body(...)):
     '''
-    servers: list of ip addresses with corresponding port where file need to be copied
-    filename: name of file that client wants to copy
-    newfilename: name of file copy
+    - **servers**: list of ip addresses with corresponding port where file need to be copied
+    - **filename**: name of file that client wants to copy
+    - **newfilename**: name of file copy
     '''
     app.logger.debug(f'Storage server recieved servers list: {servers}.')
     app.logger.debug(f'Storage server is copying file named {filename} to file with name {newfilename}.')
@@ -280,9 +280,9 @@ async def copy(servers: List[str] = Body(...), filename: str = Body(...), newfil
 
 async def forward_copy(servers: List[str], filename: str, newfilename: str):
     '''
-    servers: list of ip addresses with corresponding port where file need to be copied
-    filename: name of file that client wants to copy
-    newfilename: name of file copy
+    - **servers**: list of ip addresses with corresponding port where file need to be copied
+    - **filename**: name of file that client wants to copy
+    - **newfilename**: name of file copy
     '''
     server = servers[1]
     servers = servers[1:]
@@ -300,8 +300,8 @@ async def forward_copy(servers: List[str], filename: str, newfilename: str):
 @app.post('/file/delete', summary='Delete a file')
 async def delete(servers: List[str] = Body(...), filename: str = Body(...)):
     '''
-    servers: list of ip addresses with corresponding port where to delete the file
-    filename: name of file that client wants to delete
+    - **servers**: list of ip addresses with corresponding port where to delete the file
+    - **filename**: name of file that client wants to delete
     '''
     file_address = DATA_DIR + filename
 
@@ -330,8 +330,8 @@ async def delete(servers: List[str] = Body(...), filename: str = Body(...)):
 
 async def forward_delete(servers: List[str], filename: str):
     '''
-    servers: list of ip addresses with corresponding port where to delete the file
-    filename: name of file that client wants to delete
+    - **servers**: list of ip addresses with corresponding port where to delete the file
+    - **filename**: name of file that client wants to delete
     '''
     server = servers[1]
     servers = servers[1:]
