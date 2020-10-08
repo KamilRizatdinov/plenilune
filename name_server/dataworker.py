@@ -39,15 +39,10 @@ def update_data(field, value):
     set_data(data)
 
 
-def get_storage_servers_hostnames():
-    storage_servers = get_data()['storage_servers']
-    result = [storage_server['hostname'] for storage_server in storage_servers]
-    return (result, len(result))
-
-
 def get_active_storage_servers_hostnames():
     storage_servers = get_data()['storage_servers']
     result = [storage_server['hostname'] for storage_server in storage_servers if storage_server["status"] == "UP"]
+    random.shuffle(result)
     return result
 
 
