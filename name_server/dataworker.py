@@ -3,6 +3,7 @@ import random
 import uuid
 
 import redis
+import requests
 
 
 conn = redis.Redis('redis')
@@ -46,9 +47,39 @@ def get_active_storage_servers_hostnames():
     return result
 
 
+def get_random_active_storage_server():
+    storage_servers = get_data()["stoage_servers"]
+    active_storage_servers = [storage_server for storage_server in storage_servers if storage_server["status"] == "UP"]
+    storage_server = random.choice(active_storage_servers)
+    return storage_server
+
+
+def get_blocks_difference(blocks):
+    storage_server = get_random_active_storage_server()
+    dest_blocks = storage_server["blocks"]
+    blocks_to_delete = [block for block in blocks if block not in dest_blocks]
+    blocks_to_replicate = [block for block in dest_blocks if block not in blocks]
+
+    return (blocks_to_delete, blocks_to_replicate)
+
+
 def register_storage_server(hostname: str, dockername: str, blocks: list):
     storage_servers = get_data()["storage_servers"]
     storage_servers_hostnames = [storage_server["hostname"] for storage_server in storage_servers]
+
+    blocks_to_delete, blocks_to_replicate = get_blocks_difference(blocks)
+
+    for block in blocks_to_delete:
+        requests.post(
+            f'http://{hostname}/file/delete',
+            json={'servers': [hostname], 'filename': block}
+        )
+    
+    for block in blocks_to_replicate:
+        requests.post(
+            f'http://{hostname}/file/delete',
+            json={'server': hostname, 'filename': block}
+        )
 
     if not hostname in storage_servers_hostnames:
         storage_servers.append({"hostname": hostname, "dockername": dockername, "status": "UP", "blocks": blocks})
