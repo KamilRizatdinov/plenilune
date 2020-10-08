@@ -150,7 +150,7 @@ async def poll_storage_servers():
             await asyncio.sleep(0)
         
         update_data("storage_servers", storage_servers)
-        await asyncio.sleep(5)
+        await asyncio.sleep(60)
 
 
 if __name__ == '__main__':
