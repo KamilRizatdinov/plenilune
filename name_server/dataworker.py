@@ -50,17 +50,25 @@ def get_active_storage_servers_hostnames():
 def get_random_active_storage_server():
     storage_servers = get_data()["storage_servers"]
     active_storage_servers = [storage_server for storage_server in storage_servers if storage_server["status"] == "UP"]
-    storage_server = random.choice(active_storage_servers)
-    return storage_server
+
+    if active_storage_servers:
+        storage_server = random.choice(active_storage_servers)
+        return storage_server
+    else:
+        return None
 
 
 def get_blocks_difference(blocks):
     storage_server = get_random_active_storage_server()
-    dest_blocks = storage_server["blocks"]
-    blocks_to_delete = [block for block in blocks if block not in dest_blocks]
-    blocks_to_replicate = [block for block in dest_blocks if block not in blocks]
+    
+    if storage_server:
+        dest_blocks = storage_server["blocks"]
+        blocks_to_delete = [block for block in blocks if block not in dest_blocks]
+        blocks_to_replicate = [block for block in dest_blocks if block not in blocks]
 
-    return (blocks_to_delete, blocks_to_replicate)
+        return (blocks_to_delete, blocks_to_replicate)
+    else: 
+        return ([], [])
 
 
 def register_storage_server(hostname: str, dockername: str, blocks: list):
