@@ -143,7 +143,7 @@ async def poll_storage_servers():
 
                 storage_server["blocks"] = data["blocks"]    
                 storage_server["status"] = "UP"     
-                app.logger.gebug(f"Storage server is UP: {storage_server['hostname']}")       
+                app.logger.debug(f"Storage server is UP: {storage_server['hostname']}")       
             except ConnectionError as e:
                 storage_server["status"] = "DOWN"
                 app.logger.error(f"Storage server is DOWN: {storage_server['hostname']}")
