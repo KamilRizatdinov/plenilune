@@ -212,7 +212,7 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
     files = {
-        'file': (file.filename, file.file),
+        'file': (file.filename, open(DATA_DIR + file_address, 'rb')),
     }
 
     response = requests.post(f'http://{server}/file/put', data={'servers': servers}, files=files)
