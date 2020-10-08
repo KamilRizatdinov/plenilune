@@ -68,18 +68,18 @@ def register_storage_server(hostname: str, dockername: str, blocks: list):
     storage_servers_hostnames = [storage_server["hostname"] for storage_server in storage_servers]
 
     blocks_to_delete, blocks_to_replicate = get_blocks_difference(blocks)
-
-    for block in blocks_to_delete:
-        requests.post(
-            f'http://{hostname}/file/delete',
-            json={'servers': [hostname], 'filename': block}
-        )
     
-    for block in blocks_to_replicate:
-        requests.post(
-            f'http://{hostname}/file/delete',
-            json={'server': hostname, 'filename': block}
-        )
+    # for block in blocks_to_delete:
+    #     requests.post(
+    #         f'http://{hostname}/file/delete',
+    #         json={'servers': [hostname], 'filename': block}
+    #     )
+    
+    # for block in blocks_to_replicate:
+    #     requests.post(
+    #         f'http://{hostname}/file/delete',
+    #         json={'server': hostname, 'filename': block}
+    #     )
 
     if not hostname in storage_servers_hostnames:
         storage_servers.append({"hostname": hostname, "dockername": dockername, "status": "UP", "blocks": blocks})

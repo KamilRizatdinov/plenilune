@@ -123,6 +123,7 @@ async def client_directory_delete(dirname: str, flag: str = None):
 
 @app.post("/storage/register")
 async def storege_register(hostname: str = Body(...), dockername: str = Body(...), blocks: List[str] = Body(...)):
+    app.logger.debug(f"Register storage server with next diffs: {get_blocks_difference(blocks)}")
     return register_storage_server(hostname, dockername, blocks)
 
 
