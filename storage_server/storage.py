@@ -137,7 +137,7 @@ async def replicate(server: str = Body(...), filename: str = Body(...)):
             if response.status_code != 200:
                 logger.error(f'Something went wrong: {response.json()["detail"]}')
         
-    return {'hostname': IP, 'dockername' : docker_ip, 'blocks': blocks}
+    return {'detail': f"Block '{filename}' is replicated to: {server}"}
 
 
 @app.post('/file/create', summary='Create file')
