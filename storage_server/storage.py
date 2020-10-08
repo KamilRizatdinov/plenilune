@@ -128,13 +128,14 @@ async def replicate(server: str = Body(...), filename: str = Body(...)):
         logger.error('Storage server raised an error with status code 400.')
         raise HTTPException(status_code=400, detail=f'File {filename} does not exist in directory!')
     else:
-        files = {
-            'file': (filename, open(file_address, 'rb')),
-        }
-        response = requests.post(f'http://{server}/file/put', {'servers': [server]}, files=files)
+        with open(file_address, 'rb') as f:
+            files = {
+                'file': (filename, f),
+            }
+            response = requests.post(f'http://{server}/file/put', {'servers': [server]}, files=files)
 
-        if response.status_code != 200:
-            logger.error(f'Something went wrong: {response.json()["detail"]}')
+            if response.status_code != 200:
+                logger.error(f'Something went wrong: {response.json()["detail"]}')
         
     return {'hostname': IP, 'dockername' : docker_ip, 'blocks': blocks}
 
@@ -231,14 +232,15 @@ async def forward_put(servers: list, file: UploadFile = File(...)):
 
     app.logger.debug(f'Storage server {server} is forwarding request to other servers {servers}.')
 
-    files = {
-        'file': (file.filename, open(DATA_DIR + file.filename, 'rb')),
-    }
+    
+    with open(DATA_DIR + file.filename, 'rb') as f:
+        files = {
+            'file': (file.filename, f),
+        }
+        response = requests.post(f'http://{server}/file/put', data={'servers': servers}, files=files)
 
-    response = requests.post(f'http://{server}/file/put', data={'servers': servers}, files=files)
-
-    if response.status_code != 200:
-        logger.error(f'Something went wrong: {response.json()["detail"]}')
+        if response.status_code != 200:
+            logger.error(f'Something went wrong: {response.json()["detail"]}')
     
     app.logger.debug(f'Storage server {server} forwarded request to other servers {servers}.')
 
