@@ -48,7 +48,7 @@ def get_storage_servers_hostnames():
 def get_active_storage_servers_hostnames():
     storage_servers = get_data()['storage_servers']
     result = [storage_server['hostname'] for storage_server in storage_servers if storage_server["status"] == "UP"]
-    return (result, len(result))
+    return result
 
 
 def register_storage_server(hostname: str, dockername: str, blocks: list):
@@ -81,13 +81,10 @@ def get_file_blocks(filename: str):
 
 
 def allocate_blocks(blocks_num: int):
-    replicas = get_data()['replication']
     result = []
     for i in range(blocks_num):
         block_name = str(uuid.uuid1())
-        hostnames, hostnames_num = get_active_storage_servers_hostnames()
-        addresses = random.sample(hostnames, min(hostnames_num, replicas))
-        result.append({"block_index": i, "block_name": block_name, "addresses": addresses})
+        result.append({"block_index": i, "block_name": block_name})
     return result
 
 
@@ -104,23 +101,31 @@ def create_file_entry(filename: str, blocks_allocation: list):
 
 
 def init(block_size: int):
-    storage_servers = get_data()['storage_servers']
-    result = [server['hostname'] for server in storage_servers]
     dump_data()
     update_data('block_size', block_size)
-    return result
+    return get_active_storage_servers_hostnames()
 
 
 def file_create(filename: str, filesize: int):
     blocks_num = get_block_num(filesize)
     blocks_allocation = allocate_blocks(blocks_num)
     create_file_entry(filename, blocks_allocation)
-    return {"filename": filename, "blocks": blocks_allocation, "block_size": get_data()["block_size"]}
+    return {
+        "filename": filename, 
+        "blocks": blocks_allocation, 
+        "addresses": get_active_storage_servers_hostnames(), 
+        "block_size": get_data()["block_size"]
+    }
 
 
 def file_read(filename: str):
     blocks = get_file_blocks(filename)
-    return {"filename": filename, "blocks": blocks, "block_size": get_data()["block_size"]}
+    return {
+        "filename": filename, 
+        "blocks": blocks, 
+        "addresses": get_active_storage_servers_hostnames(),
+        "block_size": get_data()["block_size"]
+    }
 
 
 def file_copy(filename: str, destination: str):
@@ -136,7 +141,24 @@ def file_copy(filename: str, destination: str):
     
     create_file_entry(destination, copy_blocks)
 
-    return {"blocks": result}
+    return {
+        "blocks": result, 
+        "addresses": get_active_storage_servers_hostnames()
+    }
+
+
+def file_delete(filename: str):
+    data = get_data()
+    client_cursor = data['client_cursor']
+    fsimage = data['fsimage']
+    file_allocation = fsimage[client_cursor]["files"].pop(filename)
+    update_data("fsimage", fsimage)
+    return {
+        "filename": filename, 
+        "blocks": file_allocation, 
+        "addresses": get_active_storage_servers_hostnames(),
+        "block_size": get_data()["block_size"]
+    }
 
 
 def file_move(filename: str, destination: str):
@@ -147,21 +169,17 @@ def file_move(filename: str, destination: str):
     return {"detail": f"File '{filename}' moved to directory: {destination}"}
 
 
-def file_delete(filename: str):
-    data = get_data()
-    client_cursor = data['client_cursor']
-    fsimage = data['fsimage']
-    file_allocation = fsimage[client_cursor]["files"].pop(filename)
-    update_data("fsimage", fsimage)
-    return {"filename": filename, "blocks": file_allocation, "block_size": get_data()["block_size"]}
-
-
 def file_info(filename: str):
     data = get_data()
     client_cursor = data['client_cursor']
     fsimage = data['fsimage']
     file_allocation = fsimage[client_cursor]["files"][filename]
-    return {"filename": filename, "blocks": file_allocation, "block_size": get_data()["block_size"]}
+    return {
+        "filename": filename, 
+        "blocks": file_allocation, 
+        "addresses": get_active_storage_servers_hostnames(),
+        "block_size": get_data()["block_size"]
+    }
 
 
 def check_directory_existance(dirname: str):
