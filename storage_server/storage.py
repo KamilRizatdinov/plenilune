@@ -77,7 +77,7 @@ async def replicate(address: str, blocks_to_delete: List[str], blocks_to_replica
             file_address = DATA_DIR + block
 
             with open(file_address, 'wb') as buffer:
-                shutil.copyfileobj(response.json(), buffer)
+                buffer.write(response.json())
 
         else:
             raise HTTPException(status_code=404, detail=str(response.json()["detail"]))
