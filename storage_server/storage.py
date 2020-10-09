@@ -57,7 +57,7 @@ async def startup_event():
     replicate(data['address'], data['blocks_to_delete'], data['blocks_to_replicate'])
 
 
-async def replicate(address: str = Body(...), blocks_to_delete: List[str] = Body(...), blocks_to_replicate: List[str] = Body(...)):
+async def replicate(address: str, blocks_to_delete: List[str], blocks_to_replicate: List[str]):
     '''
     Function that replicates the data
     Params:
