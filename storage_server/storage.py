@@ -273,7 +273,7 @@ async def get(filename: str):
         logger.error(f'Storage server didn\'t find the file: {filename}.')
         logger.error('Storage server raised an error with status code 400.')
         raise HTTPException(status_code=400, detail=f'File {filename} does not exist in directory!')
-    with open(file_address) as f:
+    with open(file_address, "rb") as f:
         app.logger.debug(f'Storage server has found the file: {filename}.')
         app.logger.debug(f'Storage server sending the file in response')
         return f.read() 
