@@ -86,7 +86,7 @@ def get_blocks_difference(blocks):
 
         return {"address": storage_server["hostname"], "blocks_to_delete": blocks_to_delete, "blocks_to_replicate": blocks_to_replicate}
     else: 
-        return ("address": None, "blocks_to_delete": [], "blocks_to_replicate":[])
+        return {"address": None, "blocks_to_delete": [], "blocks_to_replicate":[]}
 
 
 def register_storage_server(hostname: str, dockername: str, blocks: list):
