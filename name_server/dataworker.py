@@ -66,34 +66,21 @@ def get_blocks_difference(blocks):
         blocks_to_delete = [block for block in blocks if block not in dest_blocks]
         blocks_to_replicate = [block for block in dest_blocks if block not in blocks]
 
-        return (blocks_to_delete, blocks_to_replicate)
+        return {"address": storage_server["hostname"], "blocks_to_delete": blocks_to_delete, "blocks_to_replicate": blocks_to_replicate}
     else: 
-        return ([], [])
+        return ("address": None, "blocks_to_delete": [], "blocks_to_replicate":[])
 
 
 def register_storage_server(hostname: str, dockername: str, blocks: list):
     storage_servers = get_data()["storage_servers"]
     storage_servers_hostnames = [storage_server["hostname"] for storage_server in storage_servers]
-
-    blocks_to_delete, blocks_to_replicate = get_blocks_difference(blocks)
-
-    for block in blocks_to_delete:
-        requests.post(
-            f'http://{hostname}/file/delete',
-            json={'servers': [hostname], 'filename': block}
-        )
-    
-    for block in blocks_to_replicate:
-        requests.post(
-            f'http://{get_random_active_storage_server()["hostname"]}/storage/replicate',
-            json={'server': hostname, 'filename': block}
-        )
+    blocks_difference = get_blocks_difference(blocks)
 
     if not hostname in storage_servers_hostnames:
         storage_servers.append({"hostname": hostname, "dockername": dockername, "status": "UP", "blocks": blocks})
         update_data("storage_servers", storage_servers)
     
-    return {"hostname": hostname, "dockername": dockername, "status": "UP", "blocks": blocks}
+    return blocks_difference
 
 
 def get_block_num(filesize: int):
