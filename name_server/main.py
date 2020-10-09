@@ -129,6 +129,7 @@ async def storege_register(hostname: str = Body(...), dockername: str = Body(...
 
 @app.on_event("startup")
 async def on_startup():
+    check_data()
     asyncio.create_task(poll_storage_servers())
 
 

@@ -26,6 +26,24 @@ def dump_data():
     )
 
 
+def check_data():
+    try:
+        get_data()
+    except:
+        set_data({
+            "block_size": 1024,
+            "replication": 1000,
+            "fsimage": {
+                ".": {
+                    "dirs": [],
+                    "files": {}
+                }
+            },
+            "storage_servers": [],
+            "client_cursor": "."
+        })
+
+
 def set_data(data):
     conn.set("data", json.dumps(data))
 
