@@ -74,7 +74,11 @@ async def replicate(address: str, blocks_to_delete: List[str], blocks_to_replica
     for block in blocks_to_replicate:
         response = requests.get(f'http://{address}/file/get', {"filename": block})
         if response.status_code == 200:
-            await put(servers=[], file=response.json())
+            file_address = DATA_DIR + block
+
+            with open(file_address, 'wb') as buffer:
+                shutil.copyfileobj(response.json(), buffer)
+
         else:
             raise HTTPException(status_code=404, detail=str(response.json()["detail"]))
     
