@@ -52,6 +52,35 @@ async def startup_event():
         logger.error(f'Something went wrong: {response.json()["detail"]}')
 
 
+    data = response.json()
+    app.logger.debug('Storage server sends info to replication function.')
+    replicate(data['address'], data['blocks_to_delete'], data['blocks_to_replicate'])
+
+
+async def replicate(address: str = Body(...), blocks_to_delete: List[str] = Body(...), blocks_to_replicate: List[str] = Body(...)):
+    '''
+    Function that replicates the data
+    Params:
+    - **address**: address of another storage server to get the blocks for replication
+    - **blocks_to_delete**: names of blocks for deletion on the current storage server
+    - **blocks_to_replicate**: names of blocks to get from **address** and put on the current storage server
+    '''
+    app.logger.debug('Storage server starts replication function.')
+    app.logger.debug('Storage server is deleting blocks.')
+    for block in blocks_to_delete:
+        delete(servers=[], filename=block)
+    
+    app.logger.debug('Storage server is getting and writing blocks.')
+    for block in blocks_to_replicate:
+        response = requests.get(f'http://{address}/file/get', {"filename": block})
+        if response.status_code == 200:
+            put(servers=[], file=response.json())
+        else:
+            raise HTTPException(status_code=404, detail=str(response.json()["detail"]))
+    
+
+
+
 @app.post('/init', summary='Initialize the server')
 async def init(servers: List[str] = Body(...)):
     '''
