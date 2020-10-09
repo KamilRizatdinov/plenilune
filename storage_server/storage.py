@@ -76,7 +76,7 @@ async def replicate(address: str, blocks_to_delete: List[str], blocks_to_replica
         if response.status_code == 200:
             file_address = DATA_DIR + block
 
-            with open(file_address, 'wb') as buffer:
+            with open(file_address, 'w+') as buffer:
                 buffer.write(response.json())
 
         else:
