@@ -54,7 +54,7 @@ async def startup_event():
 
     data = response.json()
     app.logger.debug('Storage server sends info to replication function.')
-    replicate(data['address'], data['blocks_to_delete'], data['blocks_to_replicate'])
+    await replicate(data['address'], data['blocks_to_delete'], data['blocks_to_replicate'])
 
 
 async def replicate(address: str, blocks_to_delete: List[str], blocks_to_replicate: List[str]):
