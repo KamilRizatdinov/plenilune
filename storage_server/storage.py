@@ -78,8 +78,8 @@ async def replicate(address: str = Body(...), blocks_to_delete: List[str] = Body
         else:
             raise HTTPException(status_code=404, detail=str(response.json()["detail"]))
     
-
-
+    app.logger.debug('Storage server is done with replication.')
+    
 
 @app.post('/init', summary='Initialize the server')
 async def init(servers: List[str] = Body(...)):
