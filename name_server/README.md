@@ -24,5 +24,5 @@ docker-compose up --build -d
 * [x] **/dir/read.** Should return list of files, which are stored in the directory.
 * [x] **/dir/create** Should allow to create a new directory.
 * [x] **/dir/delete.** Should allow to delete directory.  If the directory contains files the system should ask for confirmation from the user before deletion.
-* [ ] **/storage/info** Should allow storage servers to send heartbeats
-* [ ] **/storage/blocks** Should allow storage servers to send stored block information
+* [x] **/storage/info** Should allow storage servers to send heartbeats
+* [x] **/storage/register** Should allow storage servers to register in DFS structure
