@@ -4,7 +4,3 @@ services:
     image: "rizatdinov/client"
     stdin_open: true
     tty: true
-    ports:
-      - "8000:8000"
-    volumes:
-      - $PWD/data:/client/data

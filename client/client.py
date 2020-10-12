@@ -4,7 +4,6 @@ import requests
 import fire
 
 name_server_address = "3.22.44.23:80"
-data_dir = '/data/'
 
 
 def write(filename: str):
@@ -24,7 +23,7 @@ def write(filename: str):
     blocks = data["blocks"]
     storage_server_addresses = data["addresses"]
     size = data['block_size']
-    file = open(data_dir+filename, 'rb')
+    file = open(filename, 'rb')
 
     for block in blocks:
         block_name = block["block_name"]
@@ -123,7 +122,7 @@ def read(filename):
         print(response.json()["detail"])
         return
 
-    file = open(data_dir+filename, "w+")
+    file = open(filename, "w+")
     blocks = data["blocks"]
     storage_server_addresses = data["addresses"]
 
