@@ -44,6 +44,8 @@ python client.py --help
 ## Initialization of DFS
 ![Client Console](images/Init_of_DFS.png)
 
+## Client Iteraction
+![Client Console](images/Client_communication.png)
 
 ## Description of communication protocols
 For communication we use ```requests``` library which simplifies HTTP requests  
