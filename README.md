@@ -15,7 +15,7 @@ Plenilune is the distributed file system(DFS), a file system with data stored on
 
 ## AWS deployment
 As VPS for storage and name servers we have chosen [AWS](https://aws.amazon.com).  
-For configuration we used [9 lab](https://docs.google.com/document/d/1hAmDzrEOwTIx_eWcwqXWy6OnYhCoulr7meR_6rua5Pw/edit) as a reference.
+For configuration we used [9 lab of DS Course in Innopolis University](https://docs.google.com/document/d/1hAmDzrEOwTIx_eWcwqXWy6OnYhCoulr7meR_6rua5Pw/edit) as a reference.
 
 ### Prerequisites
 * 4 Ubuntu 18.04 Servers
@@ -51,7 +51,7 @@ For configuration we used [9 lab](https://docs.google.com/document/d/1hAmDzrEOwT
 
 ## Required installations
 [Docker](https://www.docker.com), [Docker Compose](https://docs.docker.com/compose/install/) are required for installation of DFS.  
-Installation base commands for each instance on AWS:  
+Installation base commands for each instance(for client on local machine also):  
 ```bash
 sudo su # root privileges
 apt-get update
