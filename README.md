@@ -88,7 +88,12 @@ requests.get(f'http://{name_server_address}/file/copy', {"filename": filename, "
 Servers send response messages:  
 ![Client Console](images/respons.jpg)
 
-### Team members:
+## Team members
 * Kamil Rizatdinov
 * Rufina Talalaeva
 * Alina Paukova
+
+## Contribution of each team member
+* Kamil: Name Server implementation, deployment
+* Rufina: Storage Server implementation, servers configuration on AWS, report
+* Alina: Client implementation, report
