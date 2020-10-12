@@ -4,4 +4,3 @@ RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
 WORKDIR /client
 COPY ./ /client
 EXPOSE 8000
-CMD ["python", "client.py"]
