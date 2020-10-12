@@ -39,19 +39,22 @@ python client.py --help
 
 
 ## DFS Structure
-![Client Console](images/DFS_structure.png)
+![DFS structure](images/DFS_structure.png)
+On this figure you can see that clients and DFS system are separated.
+DFS nodes are in isolated private subnet for security purpose.
+Naming server is a main node that is responsible for managing incoming requests, processing them and giving all needed information to client. Also it knows all about servers(state, info).
 
 ## Initialization of DFS
-![Client Console](images/Init_of_DFS.png)
+![Initialization of DFS](images/Init_of_DFS.png)
 
 ## Client Interaction
-![Client Console](images/Client_communication.png)
+![Client interaction](images/Client_communication.png)
 
 ## Storage Server Interaction
-![Client Console](images/storage_server.jpg)
+![Storage server interaction](images/storage_server.jpg)
 
 ## Name Server Interaction
-![Client Console](images/Nameserver_communication.png)
+![Name server interaction](images/Nameserver_communication.png)
 
 ## Description of communication protocols
 For communication we use ```requests``` library which simplifies HTTP requests  

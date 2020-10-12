@@ -143,7 +143,7 @@ async def poll_storage_servers():
                 response = requests.get(f"http://{storage_server['hostname']}/storage/info")
                 data = response.json()
 
-                storage_server["blocks"] = data["blocks"]    
+                storage_server["blocks"] = data["blocks"]   
                 storage_server["status"] = "UP"     
                 app.logger.debug(f"Storage server is UP: {storage_server['hostname']}")       
             except ConnectionError as e:
