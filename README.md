@@ -64,7 +64,7 @@ When a client wants to do any command from the list described earlier, it:
 6. This storage server replicates the changes to other storage servers.
 
 ## Storage Server Interaction
-![Storage server interaction](images/storage_server.jpg)
+![Storage server interaction](images/storage_server1.jpg)
 Here you can see main interactions of storage servers in the DFS system.  
 
 It supports following types of interactions:
