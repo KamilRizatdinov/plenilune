@@ -58,19 +58,19 @@ apt-get update
 snap install docker # installs docker & docker-compose
 git clone https://github.com/KamilRizatdinov/plenilune.git # clones repository
 ```
-Installation of Name Server ([docker image](https://hub.docker.com/r/rizatdinov/name_server))
+Installation of Name Server ([docker image](https://hub.docker.com/r/rizatdinov/name_server)):
 ```bash
 cd plenilune/name_server
 docker pull rizatdinov/name_server
 docker compose up --build -d
 ```
-Installation of Storage Server ([docker image](https://hub.docker.com/r/rizatdinov/storage_server))
+Installation of Storage Server ([docker image](https://hub.docker.com/r/rizatdinov/storage_server)):
 ```bash
 cd plenilune/storage_server
 docker pull rizatdinov/storage_server
 docker-compose up --build -d 
 ```
-Installation of Client ([docker image](https://hub.docker.com/r/rizatdinov/client))
+Installation of Client ([docker image](https://hub.docker.com/r/rizatdinov/client)):
 ```bash
 cd plenilune/client
 docker pull rizatdinov/client
@@ -90,7 +90,8 @@ python client.py --help
 ![Client Console](images/help.jpg)
 
 
-## DFS Structure
+## Architectural diagrams
+### DFS Structure
 ![DFS structure](images/DFS_structure.png)
 Structure of our DFS is inspired by HDFS, we gained the knowledge from [this article](https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html)<br>
 Just like in HDFS structure, our name server has the **fsimage** and **storage servers** data records which make possible to name server to mimic the behaiviour of a centralized FS<br>
@@ -102,7 +103,7 @@ On this figure, you can see that clients and the DFS system are separated.
 DFS nodes are in the isolated private subnet for security purposes.   
 The naming server is the main node that is responsible for managing incoming requests, processing them, and giving all needed information to client. Also, it knows all about servers(state, info).  
 
-## Name Server internal structure
+### Name Server internal structure
 ![Name server structure](images/NameServerInternal.png)
 As you can see on the picture above and as was said previously on the DFS structure section, name server is repponsible for the distribution transparency, because it is the only node who has the file system image. All the storage servers have no idea of what they are storing (data blocks with UUID instead of filenames). 
 Name server needs to mimic the FS being centralized and we doing it using the next data on name server:
@@ -111,7 +112,7 @@ Name server needs to mimic the FS being centralized and we doing it using the ne
 * **Client cursor** is used to determine which directory of the FS is currently open.
 * **Block size** is used to split the data into blocks/chuncks which will later delivered to the storage servers.
 
-## Registration of storage servers to the DFS system
+### Registration of storage servers to the DFS system
 ![Registration of storage servers to DFS system](images/Init_of_DFS.png)
 On this figure, you can understand how storage servers are registered into the DFS system.
 We suppose that all nodes(storage servers as well as clients) know the name server's public IP.
@@ -119,7 +120,7 @@ We suppose that all nodes(storage servers as well as clients) know the name serv
 * When the storage server is started it immediately sends the request about registration to the DFS system to the naming server. It includes into the request its public IP in the global network, its private IP, and the information about blocks of files it has.
 * After getting this information the naming server adds this server to the pool of storage servers of the DFS system.
 
-## Client Interaction
+### Client Interaction
 ![Client interaction](images/Client_communication.png)
 When a client wants to do any command from the list described earlier, it:
 
@@ -130,7 +131,7 @@ When a client wants to do any command from the list described earlier, it:
 5. If the 3rd point was chosen, then the client contacts the storage server.
 6. This storage server replicates the changes to other storage servers.
 
-## Storage Server Interaction
+### Storage Server Interaction
 ![Storage server interaction](images/storage_server1.jpg)
 Here you can see the main interactions of storage servers in the DFS system.  
 
@@ -141,7 +142,7 @@ It supports the following types of interactions:
 4. Accept requests from clients
 5. Response to those requests. 
 
-## Name Server Interaction
+### Name Server Interaction
 ![Name server interaction](images/Nameserver_communication.png)
 On this figure, you can see the main interactions of the name server in the DFS system.  
 
