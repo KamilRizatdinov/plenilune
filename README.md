@@ -3,7 +3,7 @@
 ## Project description
 Plenilune is the distributed file system(DFS), a file system with data stored on a server. The data is accessed and processed as if it was stored on the local client machine. The DFS makes it convenient to share information and files among users on a network. 
 
-## Required instalations
+## Required installations
 [Docker](https://www.docker.com), [Docker hub](https://hub.docker.com/):
 ```bash
 sudo apt-get update
@@ -44,8 +44,14 @@ On this figure you can see that clients and DFS system are separated.
 DFS nodes are in isolated private subnet for security purpose.   
 Naming server is a main node that is responsible for managing incoming requests, processing them and giving all needed information to client. Also it knows all about servers(state, info).  
 
-## Initialization of DFS
-![Initialization of DFS](images/Init_of_DFS.png)
+## Registration of storage servers to DFS system
+![Registration of storage servers to DFS system](images/Init_of_DFS.png)
+On this figure you can understand how storage servers are registered into DFS system.
+
+We suppose that all nodes(storage servers as well as clients) know the name server's public IP.  
+When the storage server is started it immediately sends the request about registration to DFS system to the naming server.
+It includes into the request its public IP in global network, its private IP and the information about blocks of files it has.
+After getting this information the naming server adds this server to the pool of storage servers of DFS system.
 
 ## Client Interaction
 ![Client interaction](images/Client_communication.png)
