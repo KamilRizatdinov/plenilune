@@ -167,7 +167,7 @@ requests.get(f'http://{name_server_address}/file/copy', {"filename": filename, "
 Servers send response messages:  
 ![Client Console](images/respons.jpg)
 
-## Difficulties we faced and solutions found
+## Difficulties we faced and solutions found :sunglasses:
 * **Define and assign tasks to each team member** - solved on the second day of group work, when we gained some knowledge about task and decided to conduct a zoom meeting
 * **Find ways of interaction between Client, Name Server, and Storage Server** - read the HDFS [article](https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html), whick explains communications between this three
 * **Realisation of Fault Tolerance** - make "full replication" (each storage server has all the data blocks), which will assure data availability
