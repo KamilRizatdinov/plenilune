@@ -9,26 +9,26 @@ Plenilune is the distributed file system(DFS), a file system with data stored on
 sudo apt-get update
 sudo snap install docker
 ```
-Installation of [Name Server](https://hub.docker.com/r/rizatdinov/name_server):
+Installation of Name Server ([docker image](https://hub.docker.com/r/rizatdinov/name_server))
 ```bash
 docker pull rizatdinov/name_server
 docker compose up --build -d
 ```
-Installation of [Storage Server](https://hub.docker.com/r/rizatdinov/storage_server)
+Installation of Storage Server ([docker image](https://hub.docker.com/r/rizatdinov/storage_server))
 ```bash
 docker pull rizatdinov/storage_server
 docker-compose up --build -d 
 ```
-Installation of [Client](https://hub.docker.com/r/rizatdinov/client)
+Installation of Client ([docker image](https://hub.docker.com/r/rizatdinov/client))
 ```bash
 docker pull rizatdinov/client
-docker run —name client -itd rizatdinov/client
+docker-compose up --build -d 
 ```
 
 ## Usage guide
 To start run commands you need to enter client container bash:
 ```bash
-docker exec -it client bash
+docker exec -it <client-container-name> bash
 python client.py <command>
 ```
 Available commands can be find by ```--help``` command:
