@@ -44,8 +44,14 @@ python client.py --help
 ## Initialization of DFS
 ![Client Console](images/Init_of_DFS.png)
 
-## Client Iteraction
+## Client Interaction
 ![Client Console](images/Client_communication.png)
+
+## Storage Server Interaction
+![Client Console](images/storage_server.jpg)
+
+## Name Server Interaction
+![Client Console](images/Nameserver_communication.png)
 
 ## Description of communication protocols
 For communication we use ```requests``` library which simplifies HTTP requests  
