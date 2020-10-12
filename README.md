@@ -26,19 +26,28 @@ docker-compose up --build -d
 ```
 Installation of [Client](https://hub.docker.com/r/rizatdinov/client)
 ```bash
-docker pull rizatdinov/storage_server
-docker exec -it <container_name> bash
-python client.py <comand>
+docker pull rizatdinov/client
+docker run —name client -itd rizatdinov/client
 ```
 
 ## Usage guide
+To start run commands you need to enter client container bash:
+```bash
+docker exec -it client bash
+python client.py <command>
+```
 Available commands can be find by ```--help``` command:
+```bash
+python client.py --help
+```
 ![Client Console](images/help.jpg)
 
 
 ## Description of communication protocols
-For communication we use ```requests``` library
-All nodes use such are messages for communicating:
+For communication we use ```requests``` library which simplifies HTTP requests  
+All nodes use jsons for communication: ```{'arg[1]':'arg[1]_value', ..., 'arg[n]': 'arg[n]_value'}```   
+which are inside reqests ```requests.<command>(<url>, json)```  
+For example, file copying:
 ```bash
-
+requests.get(f'http://{name_server_address}/file/copy', {"filename": filename, "destination": destination})
 ```
