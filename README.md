@@ -22,13 +22,13 @@ docker-compose up --build -d
 Installation of [Client](https://hub.docker.com/r/rizatdinov/client)
 ```bash
 docker pull rizatdinov/client
-docker run —name client -itd rizatdinov/client
+docker-compose up --build -d 
 ```
 
 ## Usage guide
 To start run commands you need to enter client container bash:
 ```bash
-docker exec -it client bash
+docker exec -it <client-container-name> bash
 python client.py <command>
 ```
 Available commands can be find by ```--help``` command:
