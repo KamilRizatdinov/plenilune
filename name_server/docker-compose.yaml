@@ -8,7 +8,7 @@ services:
     volumes:
       - $PWD/redis-data:/data
   name_server: 
-    build: .
+    image: "rizatdinov/name_server"
     ports:
       - "80:8000"
     depends_on: 

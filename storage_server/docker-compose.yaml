@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   storage_server: 
-    build: .
+    image: "rizatdinov/storage_server"
     ports:
       - "8000:8000"
     volumes:
