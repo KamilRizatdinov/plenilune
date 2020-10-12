@@ -46,8 +46,10 @@ python client.py --help
 ## Description of communication protocols
 For communication we use ```requests``` library which simplifies HTTP requests  
 All nodes use jsons for communication: ```{'arg[1]':'arg[1]_value', ..., 'arg[n]': 'arg[n]_value'}```   
-which are inside reqests ```requests.<command>(<url>, json)```  
+which are inside reqests functions: ```requests.<command>(<url>, json)```  
 For example, file copying:
 ```bash
 requests.get(f'http://{name_server_address}/file/copy', {"filename": filename, "destination": destination})
 ```
+Servers send response messages:  
+![Client Console](images/respons.jpg)
