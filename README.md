@@ -56,6 +56,12 @@ The naming server is the main node that is responsible for managing incoming req
 
 ## Name Server internal structure
 ![Name server structure](images/NameServerInternal.png)
+As you can see on the picture above and as was said previously on the DFS structure section, name server is repponsible for the distribution transparency, because it is the only node who has the file system image. All the storage servers have no idea of what they are storing (data blocks with UUID instead of filenames). 
+Name server needs to mimic the FS being centralized and we doing it using the next data on name server:
+* Name server makes use of **fsimage** which structure was inspired by python [os library walk function](https://docs.python.org/3/library/os.html#os.walk) structure of output. 
+* Name server also stores the information about all the storage servers of the DFS in **storage servers**.
+* **Client cursor** is used to determine which directory of the FS is currently open.
+* **Block size** is used to split the data into blocks/chuncks which will later delivered to the storage servers.
 
 ## Registration of storage servers to the DFS system
 ![Registration of storage servers to DFS system](images/Init_of_DFS.png)
