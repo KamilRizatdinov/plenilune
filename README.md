@@ -3,6 +3,42 @@
 ## Project description
 Plenilune is the distributed file system(DFS), a file system with data stored on a server. The data is accessed and processed as if it was stored on the local client machine. The DFS makes it convenient to share information and files among users on a network. 
 
+## AWS deployment
+As VPS for storage and name servers we have chosen [AWS](https://aws.amazon.com).  
+For configuration we used [9 lab](https://docs.google.com/document/d/1hAmDzrEOwTIx_eWcwqXWy6OnYhCoulr7meR_6rua5Pw/edit) as a reference.
+
+### Prerequisites
+* 4 Ubuntu 18.04 Servers
+* 10.0.15.10 - name server
+* 10.0.15.11 - ss01
+* 10.0.15.12 - ss02
+* 10.0.15.13 - ss03
+
+### VPC configuration
+1. Created a VPC with the IPv4 CIDR block 10.0.0.0/16 & with the name tag DFS Network.
+2. Created a subnet for the DFS Network. Chose any availability zone, assigned the IPv4 CIDR block 10.0.15.0/24 and the name tag DFS subnet.
+3. For enablin Internet access for our instances, we created a default route pointing to the Internet gateway: 
+    1. Created Internet NetworkGateway(VPC dashboard) with name tag DFS internet gateway.
+    2. Attached by actions our VPC `DFS Network`
+    3. In the route table for DFS Network(VPC dashboard) we edited the routes tab by adding the route where destination(0.0.0.0/0.), target(he identifier of the DFS internet gateway).
+4. Created a new Security group for connecting to our servers using ssh:
+    1. Clicked create security group
+    2. Specified the security group name as dfs-security-group and the description as security group for DFS network.
+    3. Selected our VPC `DFS Network`.
+    4. Clicked create.
+    5. Edited inbound rules for security group by adding:
+        * rule(Type:SSH, Source:Anywhere).
+        * rule(Type:All traffic, Source:Custom, network’s IP address: 10.0.15.0/24).
+
+### Servers launch
+1. In EC2 Dashboard, clicked to launch a new instance and selected an `Ubuntu Server 18.04 LTS` and instance type `t2.micro`.
+2. On the Configure Instance page chose VPC `DFS Network`, enabled `Auto-assign Public IP` and assigned primary IP `<server-ip-from-prerequisites>` in Network interfaces tab.
+3. On the Add Tags page added the key: Name, value: `<name-of-server-from-prerequisits>`.
+4. On the Configure Security Group page, selected an existing security group `dfs-security-group`.
+5. Launch the instance.
+6. For all instances we have generated the same key pair.
+7. Connected to our instances by ssh.
+
 ## Required installations
 [Docker](https://www.docker.com), [Docker hub](https://hub.docker.com/):
 ```bash
