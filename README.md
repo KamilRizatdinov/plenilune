@@ -54,6 +54,9 @@ On this figure, you can see that clients and the DFS system are separated.
 DFS nodes are in the isolated private subnet for security purposes.   
 The naming server is the main node that is responsible for managing incoming requests, processing them, and giving all needed information to client. Also, it knows all about servers(state, info).  
 
+## Name Server internal structure
+![Name server structure](images/NameServerInternal.png)
+
 ## Registration of storage servers to the DFS system
 ![Registration of storage servers to DFS system](images/Init_of_DFS.png)
 On this figure, you can understand how storage servers are registered into the DFS system.
