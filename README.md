@@ -50,23 +50,29 @@ For configuration we used [9 lab](https://docs.google.com/document/d/1hAmDzrEOwT
 7. Connected to our instances by ssh.
 
 ## Required installations
-[Docker](https://www.docker.com), [Docker hub](https://hub.docker.com/):
+[Docker](https://www.docker.com), [Docker Compose](https://docs.docker.com/compose/install/) are required for installation of DFS.  
+Installation base commands for each instance on AWS:  
 ```bash
-sudo apt-get update
-sudo snap install docker
+sudo su # root privileges
+apt-get update
+snap install docker # installs docker & docker-compose
+git clone https://github.com/KamilRizatdinov/plenilune.git # clones repository
 ```
 Installation of Name Server ([docker image](https://hub.docker.com/r/rizatdinov/name_server))
 ```bash
+cd plenilune/name_server
 docker pull rizatdinov/name_server
 docker compose up --build -d
 ```
 Installation of Storage Server ([docker image](https://hub.docker.com/r/rizatdinov/storage_server))
 ```bash
+cd plenilune/storage_server
 docker pull rizatdinov/storage_server
 docker-compose up --build -d 
 ```
 Installation of Client ([docker image](https://hub.docker.com/r/rizatdinov/client))
 ```bash
+cd plenilune/client
 docker pull rizatdinov/client
 docker-compose up --build -d 
 ```
