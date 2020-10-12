@@ -47,11 +47,10 @@ Naming server is a main node that is responsible for managing incoming requests,
 ## Registration of storage servers to DFS system
 ![Registration of storage servers to DFS system](images/Init_of_DFS.png)
 On this figure you can understand how storage servers are registered into DFS system.
+We suppose that all nodes(storage servers as well as clients) know the name server's public IP.
 
-We suppose that all nodes(storage servers as well as clients) know the name server's public IP.  
-When the storage server is started it immediately sends the request about registration to DFS system to the naming server.
-It includes into the request its public IP in global network, its private IP and the information about blocks of files it has.
-After getting this information the naming server adds this server to the pool of storage servers of DFS system.
+* When the storage server is started it immediately sends the request about registration to DFS system to the naming server. It includes into the request its public IP in global network, its private IP and the information about blocks of files it has.
+* After getting this information the naming server adds this server to the pool of storage servers of DFS system.
 
 ## Client Interaction
 ![Client interaction](images/Client_communication.png)
@@ -66,6 +65,14 @@ When a client wants to do any command from the list described earlier, it:
 
 ## Storage Server Interaction
 ![Storage server interaction](images/storage_server.jpg)
+Here you can see main interactions of storage servers in the DFS system.  
+
+It supports following types of interactions:
+1. Replication of file blocks to other servers
+2. Accept requests from the naming server
+3. Send an info about itself to the naming server
+4. Accept requests from clients
+5. Response to that requests. 
 
 ## Name Server Interaction
 ![Name server interaction](images/Nameserver_communication.png)
