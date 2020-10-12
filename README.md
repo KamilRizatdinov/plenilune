@@ -1,5 +1,15 @@
 # Plenilune
 
+## Team members
+* Kamil Rizatdinov
+* Rufina Talalaeva
+* Alina Paukova
+
+## Contribution of each team member
+* Kamil: Name Server implementation, deployment
+* Rufina: Storage Server implementation, servers configuration on AWS, report
+* Alina: Client implementation, report
+
 ## Project description
 Plenilune is the distributed file system(DFS), a file system with data stored on a server. The data is accessed and processed as if it was stored on the local client machine. The DFS makes it convenient to share information and files among users on a network. 
 
@@ -67,7 +77,7 @@ To start run commands you need to enter client container bash:
 docker exec -it <client-container-name> bash
 python client.py <command>
 ```
-Available commands can be find by ```--help``` command:
+Available commands can be found by ```--help``` command:
 ```bash
 python client.py --help
 ```
@@ -76,53 +86,62 @@ python client.py --help
 
 ## DFS Structure
 ![DFS structure](images/DFS_structure.png)
-On this figure you can see that clients and DFS system are separated.  
-DFS nodes are in isolated private subnet for security purpose.   
-Naming server is a main node that is responsible for managing incoming requests, processing them and giving all needed information to client. Also it knows all about servers(state, info).  
+On this figure, you can see that clients and the DFS system are separated.  
+DFS nodes are in the isolated private subnet for security purposes.   
+The naming server is the main node that is responsible for managing incoming requests, processing them, and giving all needed information to client. Also, it knows all about servers(state, info).  
 
-## Registration of storage servers to DFS system
+## Name Server internal structure
+![Name server structure](images/NameServerInternal.png)
+As you can see on the picture above and as was said previously on the DFS structure section, name server is repponsible for the distribution transparency, because it is the only node who has the file system image. All the storage servers have no idea of what they are storing (data blocks with UUID instead of filenames). 
+Name server needs to mimic the FS being centralized and we doing it using the next data on name server:
+* Name server makes use of **fsimage** which structure was inspired by python [os library walk function](https://docs.python.org/3/library/os.html#os.walk) structure of output. 
+* Name server also stores the information about all the storage servers of the DFS in **storage servers**.
+* **Client cursor** is used to determine which directory of the FS is currently open.
+* **Block size** is used to split the data into blocks/chuncks which will later delivered to the storage servers.
+
+## Registration of storage servers to the DFS system
 ![Registration of storage servers to DFS system](images/Init_of_DFS.png)
-On this figure you can understand how storage servers are registered into DFS system.
+On this figure, you can understand how storage servers are registered into the DFS system.
 We suppose that all nodes(storage servers as well as clients) know the name server's public IP.
 
-* When the storage server is started it immediately sends the request about registration to DFS system to the naming server. It includes into the request its public IP in global network, its private IP and the information about blocks of files it has.
-* After getting this information the naming server adds this server to the pool of storage servers of DFS system.
+* When the storage server is started it immediately sends the request about registration to the DFS system to the naming server. It includes into the request its public IP in the global network, its private IP, and the information about blocks of files it has.
+* After getting this information the naming server adds this server to the pool of storage servers of the DFS system.
 
 ## Client Interaction
 ![Client interaction](images/Client_communication.png)
 When a client wants to do any command from the list described earlier, it:
 
-1. Chooses the command for specific operation
+1. Chooses the command for the specific operation
 2. Contacts the naming server, then naming server can send 2 variant of response(3 or 4)
-3. If client wants to do any operation connected to the file: read, write, create, delete, etc, it sends the information about storage server, where client can get what he wants.
-4. If client wants to see the status of DFS, see/change directory structures, it applies all changes and responses to the client.
-5. If 3rd point was chosen, then client contact the storage server.
+3. If the client wants to do any operation connected to the file: read, write, create, delete, etc, it sends the information about the storage server, where the client can get what he wants.
+4. If the client wants to see the status of DFS, see/change directory structures, it applies all changes and responses to the client.
+5. If the 3rd point was chosen, then the client contacts the storage server.
 6. This storage server replicates the changes to other storage servers.
 
 ## Storage Server Interaction
 ![Storage server interaction](images/storage_server1.jpg)
-Here you can see main interactions of storage servers in the DFS system.  
+Here you can see the main interactions of storage servers in the DFS system.  
 
-It supports following types of interactions:
+It supports the following types of interactions:
 1. Replication of file blocks to other servers
 2. Accept requests from the naming server
-3. Send an info about itself to the naming server
+3. Send info about itself to the naming server
 4. Accept requests from clients
-5. Response to that requests. 
+5. Response to those requests. 
 
 ## Name Server Interaction
 ![Name server interaction](images/Nameserver_communication.png)
-On this figure you can see main interactions of name server in the DFS system.  
+On this figure, you can see the main interactions of the name server in the DFS system.  
 
-It supports following types of interactions:
+It supports the following types of interactions:
 1. Accepts the requests from clients
-2. If client wants to do any operation connected to the file: read, write, create, delete, etc, it sends the information about storage server, where client can get what he wants.
-3. If client wants to see the status of DFS, see/change directory structures, it applies all changes and responses to the client.
-4. Sends the info about any changes in file system to redis database.
-5. Accepts responses from redis database, handles of smth went wrong.
-6. Checks the state of each storage server by sending request. If some server does not respond, deletes it from the pool of available servers and updates the available servers list associated with each file block.
-7. Accepts responses from storage server.
-8. In case of new storage server appear in the DFS system, says to that server to take info and blocks from other server.
+2. If the client wants to do any operation connected to the file: read, write, create, delete, etc, it sends the information about the storage server, where the client can get what he wants.
+3. If the client wants to see the status of DFS, see/change directory structures, it applies all changes and responses to the client.
+4. Sends the info about any changes in the file system to the Redis database.
+5. Accepts responses from the Redis database, handles of smth went wrong.
+6. Checks the state of each storage server by sending request. If some server does not respond, deletes it from the pool of available servers and updates the list of the available servers associated with each file block.
+7. Accepts responses from the storage server.
+8. In the case of a new storage server appear in the DFS system, says to that server to take info and blocks from other servers.
 
 ## Description of communication protocols
 For communication we use ```requests``` library which simplifies HTTP requests  
@@ -135,12 +154,9 @@ requests.get(f'http://{name_server_address}/file/copy', {"filename": filename, "
 Servers send response messages:  
 ![Client Console](images/respons.jpg)
 
-## Team members
-* Kamil Rizatdinov
-* Rufina Talalaeva
-* Alina Paukova
-
-## Contribution of each team member
-* Kamil: Name Server implementation, deployment
-* Rufina: Storage Server implementation, servers configuration on AWS, report
-* Alina: Client implementation, report
+## Difficulties we faced
+* Define and assign tasks to each team member
+* Find ways of interaction between Client, Name Server, and Storage Server
+* Realisation of Fault tolerance
+* Realisation of replicas
+* Realisation of Storage Server restoration
