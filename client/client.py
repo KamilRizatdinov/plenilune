@@ -4,6 +4,7 @@ import requests
 import fire
 
 name_server_address = "3.22.44.23:80"
+data_dir = '/data/'
 
 
 def write(filename: str):
@@ -19,11 +20,11 @@ def write(filename: str):
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    
+
     blocks = data["blocks"]
     storage_server_addresses = data["addresses"]
     size = data['block_size']
-    file = open(filename, 'rb')
+    file = open(data_dir+filename, 'rb')
 
     for block in blocks:
         block_name = block["block_name"]
@@ -37,7 +38,7 @@ def write(filename: str):
         if response.status_code != 200:
             print(response.json()["detail"])
             return
-        
+
         print(response.json())
     print(f'File uploaded: {filename}')
 
@@ -85,15 +86,15 @@ def delete(filename):
         if response.status_code != 200:
             print("Something went wrong:", response.status_code, response.reason)
             return
-        
+
     print(f'File deleted: {filename}')
 
 
 def initialize(block_size=1024):
-    '''
+    """
     Initializes the client storage on a new system, removes any existing file in the dfs root directory
     :param block_size: a size of data blocks in storage servers, by default is 1024
-    '''
+    """
     response = requests.get(f'http://{name_server_address}/init',
                             {"blocksize": block_size})
 
@@ -102,18 +103,18 @@ def initialize(block_size=1024):
 
     if storage_server_addresses:
         requests.post(
-                f'http://{storage_server_addresses[0]}/init',
-                json=storage_server_addresses
+            f'http://{storage_server_addresses[0]}/init',
+            json=storage_server_addresses
         )
-    
+
     print('System initialized')
 
 
 def read(filename):
-    '''
+    """
     Downloads a file from the DFS
     :param filename: a name of file to download
-    '''
+    """
     response = requests.get(f'http://{name_server_address}/file/read',
                             {"filename": filename})
     data = response.json()
@@ -121,11 +122,11 @@ def read(filename):
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    
-    file = open(filename, "w+")
+
+    file = open(data_dir+filename, "w+")
     blocks = data["blocks"]
     storage_server_addresses = data["addresses"]
-    
+
     for block in blocks:
         block_name = block["block_name"]
         response = requests.get(f'http://{storage_server_addresses[0]}/file/get',
@@ -140,10 +141,10 @@ def read(filename):
 
 
 def create(filename):
-    '''
+    """
     Creates a new empty file
     :param filename: a name of file to create
-    '''
+    """
     response = requests.get(f'http://{name_server_address}/file/create',
                             {"filename": filename})
     data = response.json()
@@ -151,13 +152,13 @@ def create(filename):
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    
+
     blocks = data["blocks"]
     storage_server_addresses = data["addresses"]
 
     for block in blocks:
         response = requests.post(f'http://{storage_server_addresses[0]}/file/create',
-                                json={"servers": storage_server_addresses, "filename": block["block_name"]})
+                                 json={"servers": storage_server_addresses, "filename": block["block_name"]})
         if response.status_code != 200:
             print("Something went wrong:", response.status_code)
 
@@ -183,7 +184,8 @@ def copy(filename, destination):
 
     for block in blocks:
         response = requests.post(f'http://{storage_server_addresses[0]}/file/copy',
-                                json={"servers": storage_server_addresses, "filename": block["block_name"], "newfilename": block["copy_name"]})
+                                 json={"servers": storage_server_addresses, "filename": block["block_name"],
+                                       "newfilename": block["copy_name"]})
 
         if response.status_code != 200:
             print("Something went wrong:", response.status_code)
@@ -203,7 +205,7 @@ def move(filename, destination):
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    
+
     print(response.json()["detail"])
 
 
@@ -218,7 +220,7 @@ def create_dir(dirname):
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    
+
     print(response.json()["detail"])
 
 
@@ -249,7 +251,7 @@ def delete_dir(dirname, flag=None):
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    
+
     print(response.json()["detail"])
 
 
@@ -262,7 +264,7 @@ def read_dir():
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    
+
     print(response.json())
 
 
@@ -275,7 +277,7 @@ def status():
     if response.status_code != 200:
         print(response.json()["detail"])
         return
-    
+
     pprint.pprint(response.json())
 
 
