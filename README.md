@@ -43,6 +43,13 @@ python client.py --help
 ![Client Console](images/help.jpg)
 
 
+## DFS Structure
+![Client Console](images/DFS_structure.png)
+
+## Initialization of DFS
+![Client Console](images/Init_of_DFS.png)
+
+
 ## Description of communication protocols
 For communication we use ```requests``` library which simplifies HTTP requests  
 All nodes use jsons for communication: ```{'arg[1]':'arg[1]_value', ..., 'arg[n]': 'arg[n]_value'}```   
