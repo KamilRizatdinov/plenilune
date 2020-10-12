@@ -109,7 +109,7 @@ Servers send response messages:
 * Rufina: Storage Server implementation, servers configuration on AWS, report
 * Alina: Client implementation, report
 
-## Difficulties we faced/solved
+## Difficulties we faced
 * Define and assign tasks to each team member
 * Find ways of interaction between Client, Name Server, and Storage Server
 * Realisation of Fault tolerance
