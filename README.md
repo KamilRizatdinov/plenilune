@@ -86,6 +86,12 @@ python client.py --help
 
 ## DFS Structure
 ![DFS structure](images/DFS_structure.png)
+Structure of our DFS is inspired by HDFS, we gained the knowledge from [this article](https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html)<br>
+Just like in HDFS structure, our name server has the **fsimage** and **storage servers** data records which make possible to name server to mimic the behaiviour of a centralized FS<br>
+But our implementation has some differences with the one proposed by HDFS:
+* Instead of pushing the HeartBeats from storage to name server we poll the storage servers by the name server
+* We decided to make the "full" level of replication, which will simplify our work and make sure each server has the exact same blocks stored on it
+
 On this figure, you can see that clients and the DFS system are separated.  
 DFS nodes are in the isolated private subnet for security purposes.   
 The naming server is the main node that is responsible for managing incoming requests, processing them, and giving all needed information to client. Also, it knows all about servers(state, info).  
