@@ -1,5 +1,15 @@
 # Plenilune
 
+## Team members
+* Kamil Rizatdinov
+* Rufina Talalaeva
+* Alina Paukova
+
+## Contribution of each team member
+* Kamil: Name Server implementation, deployment
+* Rufina: Storage Server implementation, servers configuration on AWS, report
+* Alina: Client implementation, report
+
 ## Project description
 Plenilune is the distributed file system(DFS), a file system with data stored on a server. The data is accessed and processed as if it was stored on the local client machine. The DFS makes it convenient to share information and files among users on a network. 
 
@@ -98,16 +108,6 @@ requests.get(f'http://{name_server_address}/file/copy', {"filename": filename, "
 ```
 Servers send response messages:  
 ![Client Console](images/respons.jpg)
-
-## Team members
-* Kamil Rizatdinov
-* Rufina Talalaeva
-* Alina Paukova
-
-## Contribution of each team member
-* Kamil: Name Server implementation, deployment
-* Rufina: Storage Server implementation, servers configuration on AWS, report
-* Alina: Client implementation, report
 
 ## Difficulties we faced
 * Define and assign tasks to each team member
