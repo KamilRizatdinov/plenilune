@@ -1,9 +1,4 @@
-# Plenilune team
-
-### Team members:
-* Kamil Rizatdinov
-* Rufina Talalaeva
-* Alina Paukova
+# Plenilune
 
 ## Project description
 Plenilune is the distributed file system(DFS), a file system with data stored on a server. The data is accessed and processed as if it was stored on the local client machine. The DFS makes it convenient to share information and files among users on a network. 
@@ -43,6 +38,21 @@ python client.py --help
 ![Client Console](images/help.jpg)
 
 
+## DFS Structure
+![Client Console](images/DFS_structure.png)
+
+## Initialization of DFS
+![Client Console](images/Init_of_DFS.png)
+
+## Client Interaction
+![Client Console](images/Client_communication.png)
+
+## Storage Server Interaction
+![Client Console](images/storage_server.jpg)
+
+## Name Server Interaction
+![Client Console](images/Nameserver_communication.png)
+
 ## Description of communication protocols
 For communication we use ```requests``` library which simplifies HTTP requests  
 All nodes use jsons for communication: ```{'arg[1]':'arg[1]_value', ..., 'arg[n]': 'arg[n]_value'}```   
@@ -53,3 +63,8 @@ requests.get(f'http://{name_server_address}/file/copy', {"filename": filename, "
 ```
 Servers send response messages:  
 ![Client Console](images/respons.jpg)
+
+### Team members:
+* Kamil Rizatdinov
+* Rufina Talalaeva
+* Alina Paukova
