@@ -76,6 +76,17 @@ It supports following types of interactions:
 
 ## Name Server Interaction
 ![Name server interaction](images/Nameserver_communication.png)
+On this figure you can see main interactions of name server in the DFS system.  
+
+It supports following types of interactions:
+1. Accepts the requests from clients
+2. If client wants to do any operation connected to the file: read, write, create, delete, etc, it sends the information about storage server, where client can get what he wants.
+3. If client wants to see the status of DFS, see/change directory structures, it applies all changes and responses to the client.
+4. Sends the info about any changes in file system to redis database.
+5. Accepts responses from redis database, handles of smth went wrong.
+6. Checks the state of each storage server by sending request. If some server does not respond, deletes it from the pool of available servers and updates the available servers list associated with each file block.
+7. Accepts responses from storage server.
+8. In case of new storage server appear in the DFS system, says to that server to take info and blocks from other server.
 
 ## Description of communication protocols
 For communication we use ```requests``` library which simplifies HTTP requests  
